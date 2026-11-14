@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Trading Journal — catat transaksi, hitung win rate, total PnL, profit factor, average R/R, dan max drawdown.">
+<meta name="theme-color" content="#080b12">
+<title>Trading Journal | MARKET INSIGHT</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080b12;--cyan:#00f0ff;--cyan-hover:#00d5e3;--muted:#8793a5;--dim:#657184;--line:rgba(255,255,255,.09);--panel:rgba(255,255,255,.035);--field:rgba(255,255,255,.04);--green:#20d6a0;--red:#ff667d;--long:#34d399;--short:#fb7185;--warn:#fbbf24}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--bg);color:#f4f7fb;min-height:100vh;line-height:1.55;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(ellipse at 50% -15%,rgba(0,240,255,.13),transparent 45%),url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--cyan);color:var(--bg)}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:10px}::-webkit-scrollbar-thumb:hover{background:rgba(0,240,255,.3)}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:8px}
+.wrap{width:min(1160px,calc(100% - 40px));margin:auto}
+header.wrap{position:relative;z-index:5}
+nav{height:82px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+.brand{font-weight:800;letter-spacing:.13em;display:flex;align-items:center;gap:12px;font-size:15px}
+.brand-mark{width:34px;height:34px;border:1px solid rgba(0,240,255,.45);border-radius:10px;display:grid;place-items:center;color:var(--cyan);background:rgba(0,240,255,.08)}
+.nav-link{font-size:13px;color:var(--muted);font-weight:700}.nav-link:hover{color:var(--cyan)}
+main{position:relative;z-index:2}
+.hero{text-align:center;padding:55px 0 35px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border:1px solid rgba(0,240,255,.2);border-radius:30px;color:var(--cyan);font-size:10px;letter-spacing:.16em;font-weight:800;text-transform:uppercase;background:rgba(0,240,255,.06)}
+.badge b{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-size:clamp(34px,5vw,55px);line-height:1.08;margin:19px 0 14px;font-weight:800;letter-spacing:-.04em}
+.gradient{background:linear-gradient(90deg,#fff,var(--cyan),#548bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.subtitle{max-width:680px;margin:auto;color:var(--muted);font-size:14px;line-height:1.8}
+.grid{display:grid;gap:15px}
+.metrics{grid-template-columns:repeat(5,minmax(0,1fr))}
+.panel{background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border:1px solid var(--line);border-radius:17px;padding:20px;backdrop-filter:blur(14px);min-width:0}
+.label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800}
+.value{font-size:clamp(18px,2.2vw,26px);font-weight:800;letter-spacing:-.04em;margin:11px 0 4px;white-space:nowrap}
+.hint{font-size:10px;color:var(--muted);line-height:1.6}
+.cyan{color:var(--cyan)}.green{color:var(--green)}.red{color:var(--red)}
+.section{margin-top:26px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px;flex-wrap:wrap}
+.section-title{font-size:15px;font-weight:800;margin:0;display:flex;align-items:center;gap:8px}
+.btn{border:1px solid rgba(0,240,255,.3);background:rgba(0,240,255,.08);color:var(--cyan);padding:10px 16px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;text-align:center;font-family:inherit;transition:background .2s}
+.btn:hover{background:rgba(0,240,255,.15)}
+.btn.ghost{border-color:var(--line);background:transparent;color:var(--muted)}
+.btn.ghost:hover{color:#fff;border-color:rgba(255,255,255,.2)}
+.btn.danger{border-color:rgba(255,102,125,.3);background:rgba(255,102,125,.08);color:var(--red)}
+.btn.danger:hover{background:rgba(255,102,125,.16)}
+.btn.sm{padding:7px 11px;font-size:11px;border-radius:8px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap}
+
+/* form */
+#formPanel{display:none}
+#formPanel.open{display:block}
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:800}
+.field input,.field textarea{background:var(--field);border:1px solid var(--line);border-radius:10px;padding:11px 13px;color:#fff;font-family:inherit;font-size:13px;font-weight:600;width:100%}
+.field input:focus,.field textarea:focus{outline:none;border-color:rgba(0,240,255,.5)}
+.field textarea{resize:vertical;min-height:70px;font-weight:500}
+.side-toggle{display:flex;gap:8px}
+.side-btn{flex:1;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--field);color:var(--muted);font-weight:800;font-size:12px;cursor:pointer;font-family:inherit;transition:.2s}
+.side-btn.long.active{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.5);color:var(--long)}
+.side-btn.short.active{background:rgba(251,113,133,.14);border-color:rgba(251,113,133,.5);color:var(--short)}
+.form-foot{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:12px;flex-wrap:wrap}
+.preview{font-size:11px;color:var(--muted)}
+.preview b{color:#fff}
+.error-box{font-size:11px;color:var(--red);margin-top:8px;display:none}
+.error-box.show{display:block}
+
+/* table */
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:17px;background:var(--panel)}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:860px}
+th{text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:13px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:13px 12px;border-top:1px solid var(--line);white-space:nowrap}
+td.notes{white-space:normal;max-width:180px;color:var(--muted);font-size:11px}
+.asset-cell{font-weight:800}
+.tag{display:inline-flex;padding:3px 9px;border-radius:7px;font-size:10px;font-weight:800;letter-spacing:.04em}
+.tag.long{background:rgba(52,211,153,.14);color:var(--long)}
+.tag.short{background:rgba(251,113,133,.14);color:var(--short)}
+.empty-row td{text-align:center;color:var(--dim);padding:40px 12px}
+.icon-btn{background:transparent;border:1px solid var(--line);color:var(--dim);width:30px;height:30px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
+.icon-btn:hover{color:var(--red);border-color:rgba(255,102,125,.4)}
+
+/* chart */
+#chartPanel canvas{width:100%;height:220px;display:block}
+.chart-legend{display:flex;gap:18px;font-size:11px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.chart-legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+.note-box{font-size:11px;color:var(--dim);line-height:1.8;margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+footer{margin-top:55px;padding:25px 0;border-top:1px solid var(--line);text-align:center;color:#657184;font-size:10px;line-height:1.8}
+
+@media(max-width:900px){.metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.form-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.wrap{width:calc(100% - 28px)}nav{height:68px}.hero{padding:42px 0 28px}.panel{padding:15px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.form-grid{grid-template-columns:1fr}.section-head{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<header class="wrap"><nav><a class="brand" href="index.html"><span class="brand-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 17L9.5 10.5L13.5 14.5L21 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 6H21V12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> MARKET INSIGHT</a><a class="nav-link" href="index.html">← Beranda</a></nav></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="badge"><b></b>Trading Journal</div>
+    <h1>Catat & Evaluasi <span class="gradient">Setiap Transaksi</span></h1>
+    <p class="subtitle">Simpan histori trading kamu, lihat statistik performa secara otomatis, dan evaluasi pola menang/kalah dari waktu ke waktu.</p>
+  </section>
+
+  <!-- Stats -->
+  <section class="grid metrics">
+    <div class="panel"><div class="label">Win Rate</div><div class="value cyan" id="statWinRate">—</div><div class="hint" id="statWinRateHint">Belum ada data</div></div>
+    <div class="panel"><div class="label">Total PnL</div><div class="value" id="statTotalPnl">—</div><div class="hint" id="statTotalPnlHint">Akumulasi profit/loss</div></div>
+    <div class="panel"><div class="label">Profit Factor</div><div class="value" id="statPF">—</div><div class="hint">Total profit ÷ total loss</div></div>
+    <div class="panel"><div class="label">Avg Risk/Reward</div><div class="value" id="statRR">—</div><div class="hint">Rata-rata R-multiple</div></div>
+    <div class="panel"><div class="label">Max Drawdown</div><div class="value red" id="statDD">—</div><div class="hint" id="statDDHint">Penurunan ekuitas terbesar</div></div>
+  </section>
+
+  <!-- Chart -->
+  <section class="section" id="chartPanel">
+    <div class="panel">
+      <div class="section-head">
+        <h2 class="section-title"><i class="fa-solid fa-chart-line cyan"></i> Grafik Performa (Equity Curve)</h2>
+      </div>
+      <canvas id="equityCanvas"></canvas>
+      <div class="chart-legend">
+        <span><span class="dot" style="background:var(--cyan)"></span>Kumulatif PnL per transaksi</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form -->
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title"><i class="fa-solid fa-book cyan"></i> Histori Transaksi</h2>
+      <div class="toolbar">
+        <button class="btn" id="btnToggleForm"><i class="fa-solid fa-plus"></i> Tambah Transaksi</button>
+        <button class="btn danger" id="btnClearAll"><i class="fa-solid fa-trash"></i> Hapus Semua</button>
+      </div>
+    </div>
+
+    <div class="panel" id="formPanel">
+      <form id="tradeForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="asset">Asset / Pair</label>
+            <input type="text" id="asset" placeholder="BTC/USDT" required autocomplete="off">
+          </div>
+          <div class="field">
+            <label>Arah Posisi</label>
+            <div class="side-toggle">
+              <button type="button" class="side-btn long active" id="btnLong">LONG</button>
+              <button type="button" class="side-btn short" id="btnShort">SHORT</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="posSize">Position Size (USD)</label>
+            <input type="number" id="posSize" placeholder="500" step="any" min="0" required>
+          </div>
+          <div class="field">
+            <label for="entry">Harga Entry (USD)</label>
+            <input type="number" id="entry" placeholder="65000" step="any" min="0" required>
+          </div>
+          <div class="field">
+            <label for="exit">Harga Exit (USD)</label>
+            <input type="number" id="exit" placeholder="66500" step="any" min="0" required>
+          </div>
+          <div class="field">
+            <label for="sl">Stop Loss (USD)</label>
+            <input type="number" id="sl" placeholder="64200" step="any" min="0" required>
+          </div>
+          <div class="field" style="grid-column:1/-1">
+            <label for="notes">Catatan / Evaluasi (opsional)</label>
+            <textarea id="notes" placeholder="Contoh: entry sesuai rencana, exit terlalu cepat karena takut retrace..."></textarea>
+          </div>
+        </div>
+        <div class="error-box" id="formError"></div>
+        <div class="form-foot">
+          <div class="preview" id="formPreview">Isi form di atas untuk lihat estimasi qty, risk, dan PnL.</div>
+          <div class="toolbar">
+            <button type="button" class="btn ghost sm" id="btnCancelForm">Batal</button>
+            <button type="submit" class="btn sm"><i class="fa-solid fa-floppy-disk"></i> Simpan Transaksi</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="table-wrap" style="margin-top:16px">
+      <table>
+        <thead>
+          <tr>
+            <th>Tanggal</th><th>Asset</th><th>Side</th><th>Entry</th><th>Exit</th><th>SL</th><th>Qty</th><th>Risk</th><th>PnL</th><th>R</th><th>Catatan</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="tradeTableBody">
+          <tr class="empty-row"><td colspan="12">Belum ada transaksi tercatat. Klik "Tambah Transaksi" untuk mulai mengisi journal kamu.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note-box">
+      <i class="fa-solid fa-circle-info"></i> Data journal disimpan secara lokal di browser kamu (localStorage) — belum tersinkron ke akun atau perangkat lain. Qty dihitung otomatis dari Position Size ÷ Entry, dan Risk dihitung dari jarak Entry ke Stop Loss dikali Qty. Angka ini untuk catatan pribadi, bukan saran finansial.
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <a href="tentang.html" style="color:var(--dim)">Tentang</a> &nbsp;·&nbsp;
+  <a href="tentang.html#disclaimer" style="color:var(--dim)">Disclaimer risiko</a>
+  <p style="margin-top:12px">&copy; <span id="year"></span> MARKET INSIGHT. ALL RIGHTS RESERVED.</p>
+</footer>
+
+<script>
+(function(){
+  var STORAGE_KEY = 'mi_journal_trades_v1';
+  var $ = function(id){ return document.getElementById(id); };
+  var side = 'long';
+  var trades = load();
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function save(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(trades)); }catch(e){}
+  }
+
+  function usd(n, forceDecimals){
+    if(n === null || n === undefined || isNaN(n)) return '—';
+    var abs = Math.abs(n);
+    var d = forceDecimals !== undefined ? forceDecimals : (abs !== 0 && abs < 1 ? 6 : 2);
+    var s = n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+    return (n < 0 ? '-$' : '$') + s.replace('-','');
+  }
+  function qtyFmt(n){
+    if(n === null || n === undefined || isNaN(n)) return '—';
+    return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:6});
+  }
+  function pct(n, d){
+    if(n === null || n === undefined || isNaN(n)) return '—';
+    return (Math.round(n*(d?100:1))/(d?100:1)).toFixed(d||0) + '%';
+  }
+  function fmtR(n){
+    if(n === null || n === undefined || isNaN(n)) return '—';
+    return (n >= 0 ? '+' : '') + n.toFixed(2) + 'R';
+  }
+  function fmtDate(ts){
+    var dt = new Date(ts);
+    return dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+  }
+
+  function computeTrade(t){
+    var qty = t.posSize / t.entry;
+    var risk = Math.abs(t.entry - t.sl) * qty;
+    var pnl = t.side === 'long' ? (t.exit - t.entry) * qty : (t.entry - t.exit) * qty;
+    var r = risk > 0 ? pnl / risk : null;
+    return { qty: qty, risk: risk, pnl: pnl, r: r };
+  }
+
+  // ---- Form handling ----
+  function setSide(s){
+    side = s;
+    $('btnLong').classList.toggle('active', s === 'long');
+    $('btnShort').classList.toggle('active', s === 'short');
+    updatePreview();
+  }
+  $('btnLong').addEventListener('click', function(){ setSide('long'); });
+  $('btnShort').addEventListener('click', function(){ setSide('short'); });
+
+  function readFormValues(){
+    return {
+      asset: $('asset').value.trim(),
+      side: side,
+      posSize: parseFloat($('posSize').value),
+      entry: parseFloat($('entry').value),
+      exit: parseFloat($('exit').value),
+      sl: parseFloat($('sl').value),
+      notes: $('notes').value.trim()
+    };
+  }
+
+  function updatePreview(){
+    var v = readFormValues();
+    var box = $('formPreview');
+    if(!v.asset || !v.posSize || !v.entry || !v.exit || !v.sl || isNaN(v.posSize) || isNaN(v.entry) || isNaN(v.exit) || isNaN(v.sl)){
+      box.innerHTML = 'Isi form di atas untuk lihat estimasi qty, risk, dan PnL.';
+      return;
+    }
+    var c = computeTrade(v);
+    var cls = c.pnl >= 0 ? 'green' : 'red';
+    box.innerHTML = 'Qty <b>' + qtyFmt(c.qty) + '</b> &nbsp;·&nbsp; Risk <b>' + usd(c.risk) + '</b> &nbsp;·&nbsp; Estimasi PnL <b class="' + cls + '">' + usd(c.pnl) + '</b> &nbsp;·&nbsp; R <b class="' + cls + '">' + fmtR(c.r) + '</b>';
+  }
+  ['posSize','entry','exit','sl','asset'].forEach(function(id){
+    $(id).addEventListener('input', updatePreview);
+  });
+
+  function openForm(){ $('formPanel').classList.add('open'); $('btnToggleForm').innerHTML = '<i class="fa-solid fa-minus"></i> Tutup Form'; }
+  function closeForm(){ $('formPanel').classList.remove('open'); $('btnToggleForm').innerHTML = '<i class="fa-solid fa-plus"></i> Tambah Transaksi'; $('tradeForm').reset(); setSide('long'); $('formError').classList.remove('show'); updatePreview(); }
+
+  $('btnToggleForm').addEventListener('click', function(){
+    if($('formPanel').classList.contains('open')) closeForm(); else openForm();
+  });
+  $('btnCancelForm').addEventListener('click', closeForm);
+
+  $('tradeForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var v = readFormValues();
+    var errBox = $('formError');
+    if(!v.asset){ return showError('Isi nama asset / pair dulu.'); }
+    if(!(v.posSize > 0)){ return showError('Position size harus lebih dari 0.'); }
+    if(!(v.entry > 0) || !(v.exit > 0) || !(v.sl > 0)){ return showError('Harga entry, exit, dan stop loss harus lebih dari 0.'); }
+    errBox.classList.remove('show');
+
+    var c = computeTrade(v);
+    trades.push({
+      id: Date.now() + '_' + Math.random().toString(36).slice(2,7),
+      ts: Date.now(),
+      asset: v.asset,
+      side: v.side,
+      posSize: v.posSize,
+      entry: v.entry,
+      exit: v.exit,
+      sl: v.sl,
+      qty: c.qty,
+      risk: c.risk,
+      pnl: c.pnl,
+      r: c.r,
+      notes: v.notes
+    });
+    save();
+    closeForm();
+    render();
+
+    function showError(msg){ errBox.textContent = msg; errBox.classList.add('show'); }
+  });
+
+  $('btnClearAll').addEventListener('click', function(){
+    if(trades.length === 0) return;
+    if(confirm('Hapus semua transaksi journal? Tindakan ini tidak bisa dibatalkan.')){
+      trades = [];
+      save();
+      render();
+    }
+  });
+
+  function deleteTrade(id){
+    if(!confirm('Hapus transaksi ini?')) return;
+    trades = trades.filter(function(t){ return t.id !== id; });
+    save();
+    render();
+  }
+
+  // ---- Rendering ----
+  function render(){
+    renderTable();
+    renderStats();
+    renderChart();
+  }
+
+  function renderTable(){
+    var body = $('tradeTableBody');
+    if(trades.length === 0){
+      body.innerHTML = '<tr class="empty-row"><td colspan="12">Belum ada transaksi tercatat. Klik "Tambah Transaksi" untuk mulai mengisi journal kamu.</td></tr>';
+      return;
+    }
+    var sorted = trades.slice().sort(function(a,b){ return b.ts - a.ts; });
+    body.innerHTML = sorted.map(function(t){
+      var pnlCls = t.pnl >= 0 ? 'green' : 'red';
+      var notesEsc = (t.notes || '—').replace(/</g,'&lt;');
+      return '<tr>' +
+        '<td>' + fmtDate(t.ts) + '</td>' +
+        '<td class="asset-cell">' + escapeHtml(t.asset) + '</td>' +
+        '<td><span class="tag ' + t.side + '">' + t.side.toUpperCase() + '</span></td>' +
+        '<td>' + usd(t.entry) + '</td>' +
+        '<td>' + usd(t.exit) + '</td>' +
+        '<td>' + usd(t.sl) + '</td>' +
+        '<td>' + qtyFmt(t.qty) + '</td>' +
+        '<td>' + usd(t.risk) + '</td>' +
+        '<td class="' + pnlCls + '" style="font-weight:800">' + usd(t.pnl) + '</td>' +
+        '<td class="' + pnlCls + '">' + fmtR(t.r) + '</td>' +
+        '<td class="notes" title="' + notesEsc + '">' + notesEsc + '</td>' +
+        '<td><button class="icon-btn" data-id="' + t.id + '"><i class="fa-solid fa-trash"></i></button></td>' +
+      '</tr>';
+    }).join('');
+    body.querySelectorAll('.icon-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){ deleteTrade(btn.getAttribute('data-id')); });
+    });
+  }
+
+  function escapeHtml(s){
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function renderStats(){
+    var total = trades.length;
+    if(total === 0){
+      $('statWinRate').textContent = '—'; $('statWinRateHint').textContent = 'Belum ada data';
+      $('statTotalPnl').textContent = '—'; $('statTotalPnl').className = 'value'; $('statTotalPnlHint').textContent = 'Akumulasi profit/loss';
+      $('statPF').textContent = '—';
+      $('statRR').textContent = '—';
+      $('statDD').textContent = '—'; $('statDDHint').textContent = 'Penurunan ekuitas terbesar';
+      return;
+    }
+    var wins = trades.filter(function(t){ return t.pnl > 0; });
+    var losses = trades.filter(function(t){ return t.pnl < 0; });
+    var winRate = (wins.length / total) * 100;
+    var totalPnl = trades.reduce(function(s,t){ return s + t.pnl; }, 0);
+    var sumWins = wins.reduce(function(s,t){ return s + t.pnl; }, 0);
+    var sumLossAbs = Math.abs(losses.reduce(function(s,t){ return s + t.pnl; }, 0));
+    var pf = sumLossAbs > 0 ? (sumWins / sumLossAbs) : (sumWins > 0 ? Infinity : 0);
+    var rVals = trades.filter(function(t){ return t.r !== null && isFinite(t.r); }).map(function(t){ return t.r; });
+    var avgR = rVals.length > 0 ? rVals.reduce(function(s,v){ return s+v; },0) / rVals.length : null;
+
+    // Max drawdown on equity curve ordered by time
+    var ordered = trades.slice().sort(function(a,b){ return a.ts - b.ts; });
+    var equity = 0, peak = 0, maxDD = 0;
+    ordered.forEach(function(t){
+      equity += t.pnl;
+      if(equity > peak) peak = equity;
+      var dd = peak - equity;
+      if(dd > maxDD) maxDD = dd;
+    });
+
+    $('statWinRate').textContent = pct(winRate, 1);
+    $('statWinRateHint').textContent = wins.length + ' menang / ' + losses.length + ' kalah / ' + total + ' total';
+
+    $('statTotalPnl').textContent = usd(totalPnl);
+    $('statTotalPnl').className = 'value ' + (totalPnl >= 0 ? 'green' : 'red');
+    $('statTotalPnlHint').textContent = total + ' transaksi tercatat';
+
+    $('statPF').textContent = pf === Infinity ? '∞' : pf.toFixed(2);
+    $('statRR').textContent = avgR === null ? '—' : fmtR(avgR);
+    $('statDD').textContent = usd(maxDD);
+    $('statDDHint').textContent = peak > 0 ? pct((maxDD/peak)*100, 1) + ' dari puncak ekuitas' : 'Penurunan ekuitas terbesar';
+  }
+
+  function renderChart(){
+    var canvas = $('equityCanvas');
+    var ctx = canvas.getContext('2d');
+    var dpr = window.devicePixelRatio || 1;
+    var cssW = canvas.clientWidth || canvas.parentElement.clientWidth;
+    var cssH = 220;
+    canvas.width = cssW * dpr;
+    canvas.height = cssH * dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,cssW,cssH);
+
+    var ordered = trades.slice().sort(function(a,b){ return a.ts - b.ts; });
+    var pad = {l:46,r:14,t:14,b:22};
+    var plotW = cssW - pad.l - pad.r;
+    var plotH = cssH - pad.t - pad.b;
+
+    if(ordered.length === 0){
+      ctx.fillStyle = 'rgba(135,147,165,0.7)';
+      ctx.font = '12px "Plus Jakarta Sans",sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Belum ada transaksi untuk ditampilkan', cssW/2, cssH/2);
+      return;
+    }
+
+    var points = [0];
+    var running = 0;
+    ordered.forEach(function(t){ running += t.pnl; points.push(running); });
+
+    var minV = Math.min.apply(null, points.concat([0]));
+    var maxV = Math.max.apply(null, points.concat([0]));
+    if(minV === maxV){ minV -= 1; maxV += 1; }
+    var range = maxV - minV;
+
+    function xAt(i){ return pad.l + (points.length === 1 ? 0 : (i/(points.length-1)) * plotW); }
+    function yAt(v){ return pad.t + (1 - (v - minV)/range) * plotH; }
+
+    // zero line
+    var zeroY = yAt(0);
+    ctx.strokeStyle = 'rgba(255,255,255,.12)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l, zeroY); ctx.lineTo(cssW - pad.r, zeroY); ctx.stroke();
+
+    // y labels (max, zero, min)
+    ctx.fillStyle = 'rgba(135,147,165,0.9)';
+    ctx.font = '10px "Plus Jakarta Sans",sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(usd(maxV,0), pad.l - 8, yAt(maxV) + 3);
+    ctx.fillText(usd(0,0), pad.l - 8, zeroY + 3);
+    ctx.fillText(usd(minV,0), pad.l - 8, yAt(minV) + 3);
+
+    // area fill
+    var grad = ctx.createLinearGradient(0, pad.t, 0, pad.t + plotH);
+    grad.addColorStop(0, 'rgba(0,240,255,0.25)');
+    grad.addColorStop(1, 'rgba(0,240,255,0.0)');
+    ctx.beginPath();
+    ctx.moveTo(xAt(0), yAt(points[0]));
+    points.forEach(function(v,i){ ctx.lineTo(xAt(i), yAt(v)); });
+    ctx.lineTo(xAt(points.length-1), zeroY);
+    ctx.lineTo(xAt(0), zeroY);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // line
+    ctx.beginPath();
+    points.forEach(function(v,i){
+      var x = xAt(i), y = yAt(v);
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.strokeStyle = '#00f0ff';
+    ctx.lineWidth = 2;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // dots
+    points.forEach(function(v,i){
+      if(i===0) return;
+      ctx.beginPath();
+      ctx.arc(xAt(i), yAt(v), 2.6, 0, Math.PI*2);
+      ctx.fillStyle = v >= points[i-1] ? '#34d399' : '#fb7185';
+      ctx.fill();
+    });
+  }
+
+  window.addEventListener('resize', function(){ renderChart(); });
+
+  render();
+})();
+</script>
+</body>
+</html>
