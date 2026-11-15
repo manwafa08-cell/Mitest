@@ -1,0 +1,20 @@
+{
+  "articles": [
+    {
+      "id": "cara-baca-position-size",
+      "title": "Kenapa Position Sizing Lebih Penting dari Entry Point",
+      "category": "Risk Management",
+      "date": "2026-11-15",
+      "author": "Eva_Edith",
+      "excerpt": "Banyak trader fokus nyari entry yang 'pas', padahal faktor terbesar yang nentuin bertahan atau enggaknya akun kamu adalah seberapa besar posisi yang kamu ambil.",
+      "content": [
+        "Hampir semua trader pemula ngabisin waktu buat nyari entry point yang sempurna — support, resistance, indikator, pola candlestick. Tapi ada satu variabel yang sering dilewatin: seberapa besar posisi yang diambil per transaksi.",
+        "Entry yang bagus tapi size-nya kegedean, satu kesalahan bisa langsung bikin modal berkurang drastis. Sebaliknya, entry yang biasa aja tapi size-nya dihitung dengan benar berdasarkan risiko, akun tetap aman meskipun kena stop loss berkali-kali.",
+        "Aturan dasar yang umum dipakai: jangan risiko lebih dari 1-2% dari total modal per transaksi. Artinya, kalau modal kamu 10 juta, maksimal kerugian per transaksi idealnya di kisaran 100-200 ribu, bukan ditentukan dari 'perasaan' atau nominal asal pasang leverage.",
+        "Position Size Calculator di platform ini dibuat justru buat ngebantu hitung ini secara otomatis — masukin modal, persentase risiko, dan jarak stop loss, kalkulator yang nentuin ukuran posisi yang aman buat kondisi akun kamu.",
+        "Intinya: strategi entry boleh macam-macam, tapi disiplin ukuran posisi itu yang nentuin kamu masih punya modal buat trading minggu depan atau enggak."
+      ],
+      "sources": ["Analisis internal MARKET INSIGHT"]
+    }
+  ]
+}
