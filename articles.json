@@ -15,6 +15,86 @@
         "Intinya: strategi entry boleh macam-macam, tapi disiplin ukuran posisi itu yang nentuin kamu masih punya modal buat trading minggu depan atau enggak."
       ],
       "sources": ["Analisis internal MARKET INSIGHT"]
+    },
+    {
+      "id": "support-resistance-dasar",
+      "title": "Support & Resistance: Fondasi Analisis Teknikal yang Sering Disalahpahami",
+      "category": "Technical Analysis",
+      "date": "2026-11-14",
+      "author": "Eva_Edith",
+      "excerpt": "Support dan resistance bukan garis ajaib yang pasti mantul. Ini cara baca yang lebih realistis.",
+      "content": [
+        "Support dan resistance sering digambarkan sebagai garis sakti — harga nyentuh pasti mantul. Kenyataannya, dua level ini lebih tepat disebut zona, bukan garis tipis presisi satu angka.",
+        "Support adalah area di mana tekanan beli secara historis cukup kuat buat nahan harga supaya gak turun lebih jauh. Resistance kebalikannya — area di mana tekanan jual cenderung muncul dan nahan harga naik.",
+        "Kesalahan umum: nunggu harga nyentuh persis di angka support, lalu entry tanpa konfirmasi apapun. Harga bisa aja nembus sedikit, mantul, atau malah break beneran. Level ini bukan jaminan, cuma area probabilitas.",
+        "Cara yang lebih aman: tunggu reaksi harga di area tersebut — misalnya candle rejection atau volume yang berubah — baru ambil keputusan. Gabungkan juga dengan Position Size Calculator biar meskipun salah baca level, kerugian tetap terkontrol.",
+        "Intinya: support dan resistance itu alat bantu baca peta, bukan alat prediksi pasti. Disiplin manajemen risiko tetap yang nentuin apakah satu kesalahan baca level bakal fatal atau enggak."
+      ],
+      "sources": ["Analisis internal MARKET INSIGHT"]
+    },
+    {
+      "id": "makro-pengaruhi-crypto",
+      "title": "Kenapa Berita Suku Bunga The Fed Bisa Gerakin Harga Bitcoin",
+      "category": "Market Update",
+      "date": "2026-11-12",
+      "author": "Eva_Edith",
+      "excerpt": "Crypto sering dianggap 'pasar sendiri' yang gak nyambung sama ekonomi global. Padahal kenyataannya enggak gitu.",
+      "content": [
+        "Banyak yang masuk ke crypto dengan asumsi pasar ini independen dari ekonomi tradisional. Kenyataannya, sejak institusi besar mulai masuk ke Bitcoin dan aset kripto lain, korelasi dengan pasar saham dan kebijakan moneter global makin kuat.",
+        "Salah satu yang paling sering jadi trigger pergerakan harga adalah keputusan suku bunga bank sentral Amerika Serikat (The Fed). Kalau suku bunga naik, uang cenderung ditarik dari aset berisiko tinggi kayak crypto dan saham teknologi, dialihkan ke instrumen yang lebih aman kayak obligasi.",
+        "Sebaliknya, kalau ada sinyal suku bunga bakal turun atau dipertahankan rendah, dana cenderung mengalir balik ke aset berisiko karena investor nyari imbal hasil yang lebih tinggi. Crypto termasuk salah satu yang paling sensitif terhadap pergeseran ini.",
+        "Makanya kalender ekonomi — kayak jadwal rilis data inflasi dan keputusan suku bunga — bukan cuma relevan buat trader saham, tapi juga buat siapapun yang pegang posisi crypto, baik jangka pendek maupun panjang.",
+        "Praktisnya: sebelum entry besar menjelang tanggal rilis data ekonomi penting, ada baiknya cek dulu jadwalnya. Bukan buat prediksi arah pasti, tapi buat sadar bahwa volatilitas di sekitar tanggal itu biasanya lebih tinggi dari hari biasa."
+      ],
+      "sources": ["Analisis internal MARKET INSIGHT"]
+    },
+    {
+      "id": "dominasi-bitcoin-altcoin",
+      "title": "Dominasi Bitcoin: Kenapa Altcoin Sering 'Ikut' Pergerakan BTC",
+      "category": "Bitcoin Analysis",
+      "date": "2026-11-10",
+      "author": "Eva_Edith",
+      "excerpt": "Pernah merhatiin kalau BTC turun, hampir semua altcoin ikut turun bareng? Ini alasannya.",
+      "content": [
+        "BTC Dominance adalah metrik yang nunjukin berapa persen dari total market cap crypto yang dikuasai Bitcoin. Angka ini naik-turun tergantung apakah uang sedang mengalir ke Bitcoin atau menyebar ke altcoin.",
+        "Ketika dominasi BTC naik, biasanya artinya dana justru keluar dari altcoin dan masuk ke Bitcoin — entah karena investor nyari 'aset paling aman' di dalam crypto, atau karena sentimen pasar lagi hati-hati.",
+        "Sebaliknya, kalau dominasi BTC turun sementara total market cap naik, itu biasanya tanda 'altcoin season' — dana menyebar ke aset yang lebih berisiko karena investor makin pede ambil risiko lebih besar buat cari return lebih tinggi.",
+        "Ini juga yang menjelaskan kenapa altcoin sering gerak lebih ekstrem dibanding BTC — kalau BTC naik 3%, altcoin kecil bisa naik 15-20%. Tapi kalau BTC turun 3%, altcoin kecil bisa anjlok jauh lebih dalam. Volatilitasnya lebih tinggi ke dua arah.",
+        "Buat trader, metrik BTC Dominance ini berguna sebagai konteks tambahan — bukan sinyal entry, tapi indikator apakah kondisi pasar saat ini lagi condong ke 'risk-off' (dominasi naik) atau 'risk-on' (dominasi turun, altcoin menguat)."
+      ],
+      "sources": ["Analisis internal MARKET INSIGHT"]
+    },
+    {
+      "id": "fomo-revenge-trading",
+      "title": "FOMO dan Revenge Trading: Dua Musuh Terbesar yang Bukan dari Market",
+      "category": "Trading Psychology",
+      "date": "2026-11-08",
+      "author": "Eva_Edith",
+      "excerpt": "Kerugian terbesar kadang bukan karena analisis salah, tapi karena keputusan diambil pas lagi emosi.",
+      "content": [
+        "FOMO (Fear of Missing Out) adalah dorongan buat entry karena takut ketinggalan momentum, biasanya muncul pas harga udah naik tajam dan rame dibahas di media sosial atau grup Telegram.",
+        "Masalahnya, pas FOMO muncul, itu sering artinya momentum udah berjalan cukup lama — risiko entry di titik itu jauh lebih tinggi dibanding kalau masuk di awal pergerakan. Tapi karena dorongan emosinya kuat, perhitungan risiko sering diabaikan.",
+        "Revenge trading kebalikannya — muncul setelah rugi, lalu langsung entry lagi dengan size lebih besar buat 'balikin' kerugian secepat mungkin. Keputusan ini biasanya diambil tanpa analisis ulang, murni dorongan pengen cepat impas.",
+        "Kedua pola ini punya akar yang sama: keputusan trading yang diambil berdasarkan emosi sesaat, bukan rencana yang udah disiapin sebelumnya. Dan biasanya, ini yang bikin kerugian kecil berubah jadi kerugian besar.",
+        "Cara paling praktis buat ngelawan ini: punya aturan tertulis sebelum entry — berapa risiko maksimal, kapan harus berhenti trading hari itu kalau udah kena stop loss berkali-kali. Trading Journal di platform ini juga bisa bantu ngeliat pola kapan biasanya keputusan emosional itu muncul, dari catatan transaksi sebelumnya."
+      ],
+      "sources": ["Analisis internal MARKET INSIGHT"]
+    },
+    {
+      "id": "leverage-pedang-bermata-dua",
+      "title": "Leverage di Trading Futures: Pedang Bermata Dua yang Wajib Dipahami",
+      "category": "Educational Resources",
+      "date": "2026-11-06",
+      "author": "Eva_Edith",
+      "excerpt": "Leverage bikin profit kelihatan lebih cepat gede, tapi kerugian juga ikut membesar dengan kecepatan yang sama.",
+      "content": [
+        "Leverage memungkinkan trader buka posisi yang nilainya lebih besar dari modal yang sebenarnya dipunya. Misalnya, dengan leverage 10x, modal 1 juta bisa dipakai buat buka posisi senilai 10 juta.",
+        "Yang sering disalahpahami: leverage cuma memperbesar ukuran posisi, bukan memperbesar peluang menang. Persentase pergerakan harga yang dibutuhkan buat kena likuidasi juga jadi jauh lebih kecil seiring leverage yang makin tinggi.",
+        "Contoh sederhana: dengan leverage 10x, pergerakan harga sekitar 10% ke arah berlawanan udah cukup buat ngabisin modal yang dipakai di posisi itu. Semakin tinggi leverage, semakin kecil ruang gerak harga sebelum kena likuidasi.",
+        "Ini kenapa banyak yang nganggep leverage tinggi sebagai 'short cut' profit cepat, padahal sebenarnya itu juga mempersempit margin kesalahan secara drastis. Satu pergerakan harga yang wajar di pasar crypto aja bisa langsung bikin posisi kelikuidasi.",
+        "Leverage bukan berarti harus dihindari sepenuhnya, tapi harus dipahami risikonya secara utuh — bukan cuma potensi profitnya. Kombinasi leverage yang wajar dengan position sizing yang disiplin jauh lebih penting dibanding sekadar pasang leverage setinggi mungkin."
+      ],
+      "sources": ["Analisis internal MARKET INSIGHT"]
     }
   ]
 }
