@@ -100,7 +100,20 @@ footer{margin-top:55px;padding:25px 0;border-top:1px solid var(--line);text-alig
 </style>
 </head>
 <body>
-<header class="wrap"><nav><a class="brand" href="index.html"><span class="brand-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 17L9.5 10.5L13.5 14.5L21 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 6H21V12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> MARKET INSIGHT</a><a class="nav-link" href="index.html">← Beranda</a></nav></header>
+<header class="wrap">
+  <nav>
+    <a class="brand" href="index.html">
+      <span class="brand-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 17L9.5 10.5L13.5 14.5L21 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15 6H21V12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      MARKET INSIGHT
+    </a>
+    <a class="nav-link" href="index.html">← Beranda</a>
+  </nav>
+</header>
 
 <main class="wrap">
   <section class="hero">
@@ -131,7 +144,7 @@ footer{margin-top:55px;padding:25px 0;border-top:1px solid var(--line);text-alig
     </div>
   </section>
 
-  <!-- Form -->
+  <!-- Form & Table -->
   <section class="section">
     <div class="section-head">
       <h2 class="section-title"><i class="fa-solid fa-book cyan"></i> Histori Transaksi</h2>
@@ -198,7 +211,21 @@ footer{margin-top:55px;padding:25px 0;border-top:1px solid var(--line);text-alig
           <tr class="empty-row"><td colspan="12">Belum ada transaksi tercatat. Klik "Tambah Transaksi" untuk mulai mengisi journal kamu.</td></tr>
         </tbody>
       </table>
-   <!-- SUPABASE -->
+    </div>
+
+    <div class="note-box">
+      Data tersimpan aman di akun MARKET INSIGHT kamu dan otomatis tersinkronisasi di semua perangkat.
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    © <span id="year"></span> MARKET INSIGHT · Trading Journal
+  </div>
+</footer>
+
+<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <!-- SUPABASE CONFIG -->
@@ -206,44 +233,5 @@ footer{margin-top:55px;padding:25px 0;border-top:1px solid var(--line);text-alig
 
 <!-- TRADING JOURNAL ENGINE -->
 <script src="js/journal.js"></script>
-    // area fill
-    var grad = ctx.createLinearGradient(0, pad.t, 0, pad.t + plotH);
-    grad.addColorStop(0, 'rgba(0,240,255,0.25)');
-    grad.addColorStop(1, 'rgba(0,240,255,0.0)');
-    ctx.beginPath();
-    ctx.moveTo(xAt(0), yAt(points[0]));
-    points.forEach(function(v,i){ ctx.lineTo(xAt(i), yAt(v)); });
-    ctx.lineTo(xAt(points.length-1), zeroY);
-    ctx.lineTo(xAt(0), zeroY);
-    ctx.closePath();
-    ctx.fillStyle = grad;
-    ctx.fill();
-
-    // line
-    ctx.beginPath();
-    points.forEach(function(v,i){
-      var x = xAt(i), y = yAt(v);
-      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-    });
-    ctx.strokeStyle = '#00f0ff';
-    ctx.lineWidth = 2;
-    ctx.lineJoin = 'round';
-    ctx.stroke();
-
-    // dots
-    points.forEach(function(v,i){
-      if(i===0) return;
-      ctx.beginPath();
-      ctx.arc(xAt(i), yAt(v), 2.6, 0, Math.PI*2);
-      ctx.fillStyle = v >= points[i-1] ? '#34d399' : '#fb7185';
-      ctx.fill();
-    });
-  }
-
-  window.addEventListener('resize', function(){ renderChart(); });
-
-  render();
-})();
-</script>
 </body>
 </html>
