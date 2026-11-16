@@ -42,13 +42,19 @@
     greeting.className = "text-gray-300 text-sm font-semibold hidden sm:inline";
     greeting.textContent = "Halo, " + displayName;
 
+    const settingsLink = document.createElement("a");
+    settingsLink.href = "settings.html";
+    settingsLink.title = "Pengaturan Akun";
+    settingsLink.className = "text-gray-400 hover:text-brand-cyan text-sm transition-colors";
+    settingsLink.innerHTML = '<i class="fa-solid fa-gear"></i>';
+
     const logoutBtn = document.createElement("button");
     logoutBtn.type = "button";
     logoutBtn.id = "navLogoutBtn";
     logoutBtn.className = "text-xs font-bold px-4 py-2 rounded-full border border-brand-cyan/30 text-brand-cyan hover:bg-brand-cyan hover:text-brand-bg transition-colors";
     logoutBtn.innerHTML = '<i class="fa-solid fa-arrow-right-from-bracket"></i> <span class="hidden sm:inline">Logout</span>';
 
-    navAuthArea.append(greeting, logoutBtn);
+    navAuthArea.append(greeting, settingsLink, logoutBtn);
 
     logoutBtn.addEventListener("click", async () => {
       logoutBtn.disabled = true;
