@@ -102,14 +102,12 @@
         @media(max-width:700px){
             .wrap{width:min(100% - 28px,1240px)}.topbar{height:70px}.brand{font-size:14px;letter-spacing:.1em}.brand-mark{height:31px;width:31px}.back-link{font-size:11px}main{padding:29px 0 52px}.page-heading{align-items:flex-start;flex-direction:column;margin-bottom:18px}.source-chip{font-size:10px;padding:8px 11px}
             .chart-panel{padding:17px 13px 13px;border-radius:16px}
-            /* Stack the asset and quote on phones so long prices never get squeezed off-screen. */
             .chart-top{display:grid;grid-template-columns:minmax(0,1fr);gap:11px;align-items:start}
             .asset-heading{gap:9px;width:100%;min-width:0}.asset-icon{width:38px;height:38px;flex-basis:38px;border-radius:12px}.asset-title{font-size:15px}.asset-meta{font-size:9px}
             .price-block{width:100%;display:flex;align-items:baseline;justify-content:space-between;gap:6px 12px;flex-wrap:wrap;text-align:left}
             .current-price{font-size:clamp(21px,6vw,25px);line-height:1.2;white-space:nowrap;max-width:100%;overflow:visible}.price-change{font-size:10px;margin-top:0;white-space:nowrap}
             .chart-toolbar{align-items:flex-start;flex-direction:column;gap:8px}#chart{height:300px}.chart-foot{font-size:9px;align-items:flex-start;flex-direction:column;gap:4px}
             .market-panel{padding:16px 12px 14px;border-radius:16px}.market-head{align-items:flex-start;flex-direction:column;gap:7px}.controls{align-items:stretch}.tabs{width:100%}.tab{flex:1}.control-right{width:100%;justify-content:stretch}.search-box{flex:1;width:auto}.sort-select{max-width:125px}
-            /* Compact mobile table: keep asset, full price, 24H change and save visible without sideways scrolling. */
             .table-wrap{overflow-x:hidden}
             table{min-width:0;width:100%;table-layout:fixed}
             th,td{padding:10px 6px;font-size:10px}
@@ -213,16 +211,21 @@
                 <span id="resultInfo">Menunggu data dari Binance…</span>
                 <button class="load-more" id="loadMore" type="button" hidden>Muat 50 lagi <i class="fa-solid fa-arrow-down"></i></button>
             </div>
-            <p class="notice">Data harga dan volume berasal dari pasar Spot Binance, pasangan USDT. Watchlist tersimpan di browser perangkat ini (localStorage), belum tersinkron antar perangkat. Data pasar dapat mengalami keterlambatan dan bukan merupakan rekomendasi transaksi.</p>
+            <p class="notice">Data harga dan volume berasal dari pasar Spot Binance, pasangan USDT. Watchlist tersimpan di akun MARKET INSIGHT kamu (jika login) atau di browser perangkat ini (localStorage) jika belum login. Data pasar dapat mengalami keterlambatan dan bukan merupakan rekomendasi transaksi.</p>
         </section>
     </main>
 
     <footer class="wrap">MARKET INSIGHT · Independent Trading Intelligence &amp; Risk Management Platform<br>Market data: Binance public market data API · Charts: TradingView Lightweight Charts™</footer>
 
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+
     <script>
     (() => {
         'use strict';
         const $ = id => document.getElementById(id);
+        const supabase = window.miSupabase || null;
         const API_BASES = [
             'https://data-api.binance.vision',
             'https://api.binance.com',
@@ -233,6 +236,7 @@
             BTC:'Bitcoin',ETH:'Ethereum',BNB:'BNB',SOL:'Solana',XRP:'XRP',DOGE:'Dogecoin',TRX:'TRON',ADA:'Cardano',AVAX:'Avalanche',LINK:'Chainlink',DOT:'Polkadot',BCH:'Bitcoin Cash',LTC:'Litecoin',SUI:'Sui',TON:'Toncoin',SHIB:'Shiba Inu',NEAR:'NEAR Protocol',APT:'Aptos',ARB:'Arbitrum',OP:'Optimism',ATOM:'Cosmos',ETC:'Ethereum Classic',FIL:'Filecoin',ICP:'Internet Computer',UNI:'Uniswap',AAVE:'Aave',PEPE:'Pepe',XLM:'Stellar',HBAR:'Hedera',ALGO:'Algorand',MATIC:'Polygon',POL:'Polygon',WLD:'Worldcoin',INJ:'Injective',SEI:'Sei',RENDER:'Render',FET:'Artificial Superintelligence',GALA:'Gala',SAND:'The Sandbox',MANA:'Decentraland',EOS:'EOS',VET:'VeChain',FTM:'Fantom',TAO:'Bittensor',JUP:'Jupiter',PENGU:'Pudgy Penguins',ENA:'Ethena',ONDO:'Ondo',PENDLE:'Pendle',RUNE:'THORChain',KAS:'Kaspa',TIA:'Celestia',IMX:'Immutable',DYDX:'dYdX',CRV:'Curve DAO',MKR:'Maker',LDO:'Lido DAO',QNT:'Quant',XMR:'Monero',ZEC:'Zcash',DASH:'Dash',XTZ:'Tezos',CHZ:'Chiliz',IOTA:'IOTA',NEO:'Neo',ZIL:'Zilliqa',WIF:'dogwifhat',BONK:'Bonk',FLOKI:'FLOKI',ORDI:'ORDI',JASMY:'JasmyCoin'
         };
         const EXCLUDED_BASES = new Set(['EUR','TRY','BRL','BIDR','IDRT']);
+        let currentUser = null;
         let allCoins = [];
         let activeTab = 'all';
         let selectedSymbol = 'BTCUSDT';
@@ -245,19 +249,114 @@
         let resizeObserver = null;
         let chartRequestToken = 0;
         let refreshTimer = null;
-        let favorites = loadFavorites();
+        let favorites = loadLocalFavorites();
 
-        function loadFavorites(){
+        function loadLocalFavorites(){
             try {
                 const parsed = JSON.parse(localStorage.getItem(WATCH_KEY) || '[]');
                 return new Set(Array.isArray(parsed) ? parsed.filter(x => typeof x === 'string') : []);
             } catch { return new Set(); }
         }
-        function saveFavorites(){
+        function saveLocalFavorites(){
             try { localStorage.setItem(WATCH_KEY, JSON.stringify([...favorites])); }
             catch { $('marketStatus').textContent = 'Penyimpanan browser tidak tersedia'; }
             $('watchCount').textContent = favorites.size;
         }
+
+        // ==============================================
+        // SUPABASE WATCHLIST SYNC & MIGRATION
+        // ==============================================
+        async function initWatchlistCloud(){
+            if (!supabase) return;
+            try {
+                const { data, error } = await supabase.auth.getUser();
+                if (error || !data?.user) return;
+                currentUser = data.user;
+
+                // 1. Ambil watchlist dari Supabase
+                const { data: rows, error: fetchErr } = await supabase
+                    .from('watchlist')
+                    .select('symbol')
+                    .eq('user_id', currentUser.id);
+
+                if (fetchErr) {
+                    console.error('Gagal memuat watchlist Supabase:', fetchErr.message);
+                    return;
+                }
+
+                const cloudSet = new Set((rows || []).map(r => r.symbol));
+                const localSet = loadLocalFavorites();
+
+                // 2. Migrasi item localStorage yang belum ada di cloud
+                const toMigrate = [...localSet].filter(sym => !cloudSet.has(sym));
+                if (toMigrate.length > 0) {
+                    const payload = toMigrate.map(symbol => ({
+                        user_id: currentUser.id,
+                        symbol
+                    }));
+                    const { error: migErr } = await supabase
+                        .from('watchlist')
+                        .upsert(payload, { onConflict: 'user_id,symbol', ignoreDuplicates: true });
+
+                    if (!migErr) {
+                        toMigrate.forEach(sym => cloudSet.add(sym));
+                        localStorage.removeItem(WATCH_KEY);
+                    }
+                } else if (localSet.size > 0) {
+                    localStorage.removeItem(WATCH_KEY);
+                }
+
+                favorites = cloudSet;
+                $('watchCount').textContent = favorites.size;
+                renderRows();
+            } catch (err) {
+                console.error('Watchlist sync error:', err);
+            }
+        }
+
+        async function toggleFavorite(symbol){
+            const isRemoving = favorites.has(symbol);
+
+            // Optimistic UI update
+            if (isRemoving) favorites.delete(symbol);
+            else favorites.add(symbol);
+            $('watchCount').textContent = favorites.size;
+            renderRows();
+
+            if (!currentUser || !supabase) {
+                saveLocalFavorites();
+                return;
+            }
+
+            if (isRemoving) {
+                const { error } = await supabase
+                    .from('watchlist')
+                    .delete()
+                    .eq('user_id', currentUser.id)
+                    .eq('symbol', symbol);
+
+                if (error) {
+                    // Rollback jika gagal
+                    favorites.add(symbol);
+                    $('watchCount').textContent = favorites.size;
+                    renderRows();
+                    alert('Gagal menghapus dari watchlist: ' + error.message);
+                }
+            } else {
+                const { error } = await supabase
+                    .from('watchlist')
+                    .insert({ user_id: currentUser.id, symbol });
+
+                if (error) {
+                    // Rollback jika gagal
+                    favorites.delete(symbol);
+                    $('watchCount').textContent = favorites.size;
+                    renderRows();
+                    alert('Gagal menyimpan ke watchlist: ' + error.message);
+                }
+            }
+        }
+
         function escapeHTML(value){
             return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         }
@@ -470,9 +569,8 @@
             const star = e.target.closest('[data-star]');
             if (star){
                 e.stopPropagation();
-                const symbol = star.dataset.star;
-                if (favorites.has(symbol)) favorites.delete(symbol); else favorites.add(symbol);
-                saveFavorites();renderRows();return;
+                toggleFavorite(star.dataset.star);
+                return;
             }
             const row = e.target.closest('tr[data-symbol]');
             if (row) selectCoin(row.dataset.symbol,true);
@@ -485,6 +583,7 @@
 
         $('watchCount').textContent = favorites.size;
         const chartReady = initChart();
+        initWatchlistCloud();
         loadMarket(true).then(() => {
             if (chartReady) refreshTimer = setInterval(() => loadMarket(false),90000);
         });
