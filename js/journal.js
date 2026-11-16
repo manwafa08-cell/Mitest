@@ -11,6 +11,10 @@
 
     const $ = id => document.getElementById(id);
 
+    if ($('year')) {
+        $('year').textContent = new Date().getFullYear();
+    }
+
     if (!supabase) {
         alert('Supabase belum terhubung. Periksa konfigurasi.');
         return;
@@ -56,7 +60,7 @@
             return;
         }
 
-        trades = data.map(row => ({
+        trades = (data || []).map(row => ({
             id: row.id,
             ts: new Date(row.trade_date).getTime(),
             asset: row.asset,
@@ -101,8 +105,10 @@
         await loadTrades();
     }
 
-    async function deleteTrade(id) {
+    async function deleteTrade(id, btnEl) {
         if (!confirm('Hapus transaksi ini?')) return;
+
+        if (btnEl) btnEl.disabled = true;
 
         const { error } = await supabase
             .from('trading_journal')
@@ -111,6 +117,7 @@
             .eq('user_id', user.id);
 
         if (error) {
+            if (btnEl) btnEl.disabled = false;
             alert('Gagal menghapus transaksi: ' + error.message);
             return;
         }
@@ -410,7 +417,7 @@
         if (!trades.length) {
             body.innerHTML =
                 '<tr class="empty-row"><td colspan="12">' +
-                'Belum ada transaksi tercatat. Klik Tambah Transaksi untuk mulai.' +
+                'Belum ada transaksi tercatat. Klik "Tambah Transaksi" untuk mulai mengisi journal kamu.' +
                 '</td></tr>';
             return;
         }
@@ -434,7 +441,7 @@
                     <td class="${cls}">${fmtR(t.r)}</td>
                     <td class="notes">${escapeHtml(t.notes || '—')}</td>
                     <td>
-                        <button class="icon-btn" data-id="${t.id}">
+                        <button class="icon-btn" data-id="${t.id}" title="Hapus transaksi">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
@@ -443,7 +450,7 @@
         }).join('');
 
         body.querySelectorAll('.icon-btn').forEach(btn => {
-            btn.addEventListener('click', () => deleteTrade(btn.dataset.id));
+            btn.addEventListener('click', () => deleteTrade(btn.dataset.id, btn));
         });
     }
 
@@ -630,6 +637,7 @@
 
         ctx.strokeStyle = '#00f0ff';
         ctx.lineWidth = 2;
+        ctx.lineJoin = 'round';
         ctx.stroke();
 
         points.forEach((v, i) => {
@@ -651,8 +659,6 @@
         renderStats();
         renderChart();
     }
-
-    $('year').textContent = new Date().getFullYear();
 
     window.addEventListener('resize', renderChart);
 
