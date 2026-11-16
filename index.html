@@ -88,7 +88,11 @@
             </div>
             <span>MARKET INSIGHT</span>
         </div>
-        <a href="tentang.html" class="text-gray-400 hover:text-brand-cyan text-sm font-semibold transition-colors">Tentang</a>
+        <div class="flex items-center gap-5">
+            <a href="tentang.html" class="text-gray-400 hover:text-brand-cyan text-sm font-semibold transition-colors">Tentang</a>
+            <!-- Diisi otomatis oleh js/nav-auth.js: status login (Halo, nama + Logout) atau tombol Masuk/Daftar -->
+            <div id="navAuthArea" class="flex items-center gap-3"></div>
+        </div>
     </nav>
 
     <!-- Main Content Wrapper -->
@@ -263,6 +267,15 @@
         </p>
     </footer>
     <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Configuration -->
+    <script src="js/supabase.js"></script>
+    <!-- Authentication -->
+    <script src="js/auth.js"></script>
+    <!-- Nav login-state UI (Stage 07.6) -->
+    <script src="js/nav-auth.js"></script>
 
 </body>
 </html>
