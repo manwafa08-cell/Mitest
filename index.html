@@ -391,15 +391,16 @@
             }
         }
 
-        // 3. Journal Summary from Supabase (if logged in)
+        // 3. Journal Summary from Supabase (window.miSupabase -> trading_journal)
         async function loadJournalSummary() {
             const card = $('dashJournalCard');
             const tag = $('dashJournalTag');
             const primary = $('dashJournalPrimary');
             const secondary = $('dashJournalSecondary');
 
-            const sb = window.supabaseClient || window.sb || window.db || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
+            const sb = window.miSupabase;
             if (!sb || !sb.auth) {
+                tag.textContent = 'Offline';
                 primary.textContent = 'Mode Tamu';
                 secondary.textContent = 'Login untuk sinkronisasi journal';
                 card.href = 'login.html';
@@ -407,19 +408,23 @@
             }
 
             try {
-                const { data: { session } } = await sb.auth.getSession();
-                if (!session || !session.user) {
+                const { data: { user }, error: userError } = await sb.auth.getUser();
+                if (userError || !user) {
                     tag.textContent = 'Offline';
+                    tag.className = 'text-[11px] font-bold px-2 py-0.5 rounded-md bg-white/5 text-gray-400';
                     primary.textContent = 'Belum Login';
+                    primary.className = 'text-xl font-extrabold tracking-tight text-white group-hover:text-brand-cyan transition-colors truncate';
                     secondary.textContent = 'Masuk untuk lihat statistik PnL →';
                     card.href = 'login.html';
                     return;
                 }
 
+                card.href = 'journal.html';
+
                 const { data: trades, error } = await sb
-                    .from('trades')
+                    .from('trading_journal')
                     .select('pnl')
-                    .eq('user_id', session.user.id);
+                    .eq('user_id', user.id);
 
                 if (error) throw error;
 
@@ -427,6 +432,7 @@
                     tag.textContent = '0 Trade';
                     tag.className = 'text-[11px] font-bold px-2 py-0.5 rounded-md bg-brand-cyan/10 text-brand-cyan';
                     primary.textContent = 'Belum Ada Data';
+                    primary.className = 'text-xl font-extrabold tracking-tight text-white group-hover:text-brand-cyan transition-colors truncate';
                     secondary.textContent = 'Catat transaksi pertama kamu →';
                     return;
                 }
@@ -445,6 +451,7 @@
                     : 'text-2xl font-extrabold tracking-tight text-rose-400 truncate';
                 secondary.textContent = `Win Rate ${winRate}% (${wins}/${total} menang)`;
             } catch (err) {
+                console.warn('Journal summary error:', err);
                 tag.textContent = 'Ready';
                 primary.textContent = 'Buka Journal';
                 secondary.textContent = 'Lihat & evaluasi histori trade →';
@@ -490,6 +497,12 @@
         loadFng();
         loadJournalSummary();
         loadLatestArticles();
+
+        if (window.miSupabase && window.miSupabase.auth) {
+            window.miSupabase.auth.onAuthStateChange(() => {
+                loadJournalSummary();
+            });
+        }
     })();
     </script>
 </body>
