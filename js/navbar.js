@@ -1,6 +1,6 @@
 /**
- * MARKET INSIGHT - Centralized Navigation Component (Stage 8.1)
- * Menyatu dengan tema #080B12 + #00F0FF dan kompatibel 100% dengan js/nav-auth.js (#navAuthArea).
+ * MARKET INSIGHT - Centralized Navigation Component (Final Sync)
+ * Kompatibel 100% dengan js/nav-auth.js (#navAuthArea) + fallback tombol Masuk/Daftar.
  */
 
 (function initMarketInsightNavbar() {
@@ -32,7 +32,7 @@
         top: 0;
         z-index: 50;
         width: 100%;
-        background: rgba(8, 11, 18, 0.85);
+        background: rgba(8, 11, 18, 0.88);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -105,6 +105,34 @@
         display: flex;
         align-items: center;
         gap: 12px;
+      }
+      #navAuthArea {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .mi-fallback-login {
+        color: #9ca3af;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+      .mi-fallback-login:hover {
+        color: #00F0FF;
+      }
+      .mi-fallback-register {
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 8px 16px;
+        border-radius: 9999px;
+        background: #00F0FF;
+        color: #080B12;
+        text-decoration: none;
+        transition: background 0.2s ease;
+      }
+      .mi-fallback-register:hover {
+        background: #00d5e3;
       }
       .mi-mobile-toggle {
         display: none;
@@ -188,8 +216,11 @@
           </ul>
 
           <div class="mi-nav-right">
-            <!-- Slot asli milik js/nav-auth.js -->
-            <div id="navAuthArea" class="flex items-center gap-3"></div>
+            <!-- Otomatis ditimpa js/nav-auth.js saat sesi Supabase selesai dicek -->
+            <div id="navAuthArea">
+              <a href="login.html" class="mi-fallback-login">Masuk</a>
+              <a href="register.html" class="mi-fallback-register">Daftar</a>
+            </div>
             <button type="button" class="mi-mobile-toggle" id="miMobileToggle" aria-label="Menu">
               <i class="fa-solid fa-bars"></i>
             </button>
