@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS (CDN for single-file implementation) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Tailwind Configuration -->
@@ -41,28 +41,16 @@
         }
     </script>
 
-    <!-- Custom CSS for specific Glassmorphism & Animations -->
     <style>
         body {
             background-color: #080B12;
             color: #ffffff;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
         }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #080B12;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 240, 255, 0.3);
-        }
-
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #080B12; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.3); }
         .glass-card {
             background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
             backdrop-filter: blur(16px);
@@ -72,43 +60,116 @@
 </head>
 <body class="min-h-screen relative overflow-x-hidden antialiased selection:bg-brand-cyan selection:text-brand-bg flex flex-col">
 
-    <!-- Ambient Glowing Orbs (Background) -->
+    <!-- Ambient Glowing Orbs -->
     <div class="fixed top-[-10%] left-1/2 -translate-x-1/2 w-[600px] sm:w-[800px] h-[400px] bg-brand-cyan rounded-[100%] opacity-[0.12] blur-[100px] pointer-events-none animate-pulse-slow"></div>
     <div class="fixed bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-blue-600 rounded-full opacity-[0.15] blur-[120px] pointer-events-none"></div>
     <div class="fixed top-[40%] right-[-10%] w-[300px] h-[300px] bg-brand-cyan rounded-full opacity-[0.08] blur-[90px] pointer-events-none delay-1000 animate-pulse-slow"></div>
 
-    <!-- Centralized Navigation (Rendered by js/navbar.js) -->
+    <!-- Centralized Navigation -->
     <div id="app-navbar"></div>
 
     <!-- Main Content Wrapper -->
-    <main class="flex-1 w-full max-w-5xl mx-auto px-5 relative z-10 flex flex-col items-center pt-14 pb-20">
+    <main class="flex-1 w-full max-w-5xl mx-auto px-5 relative z-10 flex flex-col items-center pt-12 pb-20">
 
         <!-- Hero Section -->
-        <section class="w-full flex flex-col items-center text-center mt-2 mb-14 md:mb-16">
-
-            <!-- Badge -->
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-cyan/10 border border-brand-cyan/20 text-brand-cyan text-xs font-bold uppercase tracking-widest mb-6 md:mb-8 backdrop-blur-sm shadow-[0_0_15px_rgba(0,240,255,0.1)]">
+        <section class="w-full flex flex-col items-center text-center mt-2 mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-cyan/10 border border-brand-cyan/20 text-brand-cyan text-xs font-bold uppercase tracking-widest mb-6 backdrop-blur-sm shadow-[0_0_15px_rgba(0,240,255,0.1)]">
                 <span class="w-2 h-2 rounded-full bg-brand-cyan animate-pulse"></span>
                 Trade With Confidence
             </div>
 
-            <!-- Headline -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-6 max-w-3xl">
-                Smarter Trading & <br class="hidden sm:block" />
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-5 max-w-3xl">
+                Smarter Trading &amp; <br class="hidden sm:block" />
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-cyan to-blue-500">
                     Risk Management
                 </span>
             </h1>
 
-            <!-- Subheadline -->
-            <p class="text-gray-400 text-base md:text-lg lg:text-xl font-medium max-w-2xl leading-relaxed mb-0">
+            <p class="text-gray-400 text-base md:text-lg font-medium max-w-2xl leading-relaxed">
                 Tingkatkan akurasi trading kamu dengan manajemen risiko yang tepat dan analisis market mendalam.
             </p>
         </section>
 
+        <!-- FASE 2: Live Command Center Widgets -->
+        <section class="w-full mb-14 space-y-5" aria-label="Live Dashboard Overview">
+            <div class="flex items-center justify-between px-1">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span class="text-xs font-bold uppercase tracking-widest text-gray-400">Live Market &amp; Account Pulse</span>
+                </div>
+                <span id="dashLastUpdated" class="text-[11px] text-gray-500 font-medium">Memuat data...</span>
+            </div>
+
+            <!-- 4 KPI Overview Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- BTC Price -->
+                <a href="coin-explorer.html" class="glass-card rounded-2xl p-5 border border-brand-border hover:border-brand-cyan/30 transition-all group">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+                            <i class="fa-brands fa-bitcoin text-amber-400 text-sm"></i> BTC / USDT
+                        </span>
+                        <span id="dashBtcChange" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-white/5 text-gray-400">—</span>
+                    </div>
+                    <div id="dashBtcPrice" class="text-2xl font-extrabold tracking-tight text-white group-hover:text-brand-cyan transition-colors">$—</div>
+                    <div class="text-[11px] text-gray-500 mt-1">Klik untuk buka chart →</div>
+                </a>
+
+                <!-- ETH Price -->
+                <a href="coin-explorer.html" class="glass-card rounded-2xl p-5 border border-brand-border hover:border-brand-cyan/30 transition-all group">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+                            <i class="fa-brands fa-ethereum text-indigo-400 text-sm"></i> ETH / USDT
+                        </span>
+                        <span id="dashEthChange" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-white/5 text-gray-400">—</span>
+                    </div>
+                    <div id="dashEthPrice" class="text-2xl font-extrabold tracking-tight text-white group-hover:text-brand-cyan transition-colors">$—</div>
+                    <div class="text-[11px] text-gray-500 mt-1">Klik untuk buka chart →</div>
+                </a>
+
+                <!-- Fear & Greed Index -->
+                <a href="market-overview.html" class="glass-card rounded-2xl p-5 border border-brand-border hover:border-brand-cyan/30 transition-all group">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+                            <i class="fa-solid fa-gauge-high text-brand-cyan text-xs"></i> Fear &amp; Greed
+                        </span>
+                        <span id="dashFngBadge" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-brand-cyan/10 text-brand-cyan">—</span>
+                    </div>
+                    <div class="flex items-baseline gap-2">
+                        <span id="dashFngValue" class="text-2xl font-extrabold tracking-tight text-white">—</span>
+                        <span class="text-xs text-gray-500 font-semibold">/ 100</span>
+                    </div>
+                    <div class="text-[11px] text-gray-500 mt-1">Sentimen pasar hari ini →</div>
+                </a>
+
+                <!-- Personal Trading Journal Snapshot -->
+                <a id="dashJournalCard" href="journal.html" class="glass-card rounded-2xl p-5 border border-brand-border hover:border-brand-cyan/30 transition-all group">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+                            <i class="fa-solid fa-book-open text-emerald-400 text-xs"></i> Journal Kamu
+                        </span>
+                        <span id="dashJournalTag" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-white/5 text-gray-400">Sync</span>
+                    </div>
+                    <div id="dashJournalPrimary" class="text-xl font-extrabold tracking-tight text-white group-hover:text-brand-cyan transition-colors truncate">Memeriksa...</div>
+                    <div id="dashJournalSecondary" class="text-[11px] text-gray-500 mt-1 truncate">Menghubungkan ke akun</div>
+                </a>
+            </div>
+
+            <!-- Latest Articles Strip -->
+            <div class="glass-card rounded-2xl p-5 border border-brand-border">
+                <div class="flex items-center justify-between mb-3.5">
+                    <span class="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+                        <i class="fa-solid fa-bolt text-brand-cyan"></i> Insight &amp; Analisis Terbaru
+                    </span>
+                    <a href="insight.html" class="text-xs font-bold text-brand-cyan hover:underline">Lihat Semua →</a>
+                </div>
+                <div id="dashLatestArticles" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="rounded-xl bg-white/[0.02] border border-white/5 p-3.5 text-xs text-gray-500">Memuat artikel terbaru...</div>
+                </div>
+            </div>
+        </section>
+
         <!-- Features/Tools Section -->
         <section class="w-full flex flex-col items-center">
-
             <div class="flex flex-col items-center mb-10 text-center">
                 <h2 class="text-sm font-bold text-gray-500 tracking-widest uppercase mb-2">Explore Our Core Tools</h2>
                 <div class="w-12 h-1 bg-gradient-to-r from-brand-cyan to-transparent rounded-full"></div>
@@ -143,7 +204,7 @@
                         </div>
                         <h3 class="text-xl font-bold text-white mb-3 group-hover:text-brand-cyan transition-colors">Market Overview</h3>
                         <p class="text-gray-400 text-sm leading-relaxed mb-8 flex-1">
-                            Market cap global, BTC dominance, Fear & Greed, dan Market Pulse — pantau kondisi pasar kripto dalam satu dashboard.
+                            Market cap global, BTC dominance, Fear &amp; Greed, dan Market Pulse — pantau kondisi pasar kripto dalam satu dashboard.
                         </p>
                         <div class="flex items-center gap-2 text-brand-cyan text-sm font-bold mt-auto group-hover:translate-x-1 transition-transform duration-300">
                             Open Market Overview <i class="fa-solid fa-arrow-right"></i>
@@ -194,7 +255,7 @@
                         </div>
                         <h3 class="text-xl font-bold text-white mb-3 group-hover:text-brand-cyan transition-colors">Economic Calendar</h3>
                         <p class="text-gray-400 text-sm leading-relaxed mb-8 flex-1">
-                            Jadwal rilis data ekonomi & keputusan suku bunga yang sering menggerakkan market crypto.
+                            Jadwal rilis data ekonomi &amp; keputusan suku bunga yang sering menggerakkan market crypto.
                         </p>
                         <div class="flex items-center gap-2 text-brand-cyan text-sm font-bold mt-auto group-hover:translate-x-1 transition-transform duration-300">
                             Open Calendar <i class="fa-solid fa-arrow-right"></i>
@@ -211,7 +272,7 @@
                         </div>
                         <h3 class="text-xl font-bold text-white mb-3 group-hover:text-brand-cyan transition-colors">Market Insight</h3>
                         <p class="text-gray-400 text-sm leading-relaxed mb-8 flex-1">
-                            Artikel edukasi & analisis market — Market Update, Technical Analysis, Risk Management, dan lainnya.
+                            Artikel edukasi &amp; analisis market — Market Update, Technical Analysis, Risk Management, dan lainnya.
                         </p>
                         <div class="flex items-center gap-2 text-brand-cyan text-sm font-bold mt-auto group-hover:translate-x-1 transition-transform duration-300">
                             Baca Artikel <i class="fa-solid fa-arrow-right"></i>
@@ -228,7 +289,7 @@
                         </div>
                         <h3 class="text-xl font-bold text-white mb-3 group-hover:text-[#229ED9] transition-colors">Market Insight Hub</h3>
                         <p class="text-gray-400 text-sm leading-relaxed mb-8 flex-1">
-                            Ruang diskusi & analisis market Crypto, Belajar bersama, berkembang bersama secara GRATIS.
+                            Ruang diskusi &amp; analisis market Crypto, Belajar bersama, berkembang bersama secara GRATIS.
                         </p>
                         <div class="flex items-center gap-2 text-[#229ED9] text-sm font-bold mt-auto group-hover:translate-x-1 transition-transform duration-300">
                             Join Community <i class="fa-solid fa-arrow-right"></i>
@@ -261,8 +322,175 @@
     <script src="js/supabase.js"></script>
     <!-- Authentication -->
     <script src="js/auth.js"></script>
-    <!-- Nav login-state UI (Stage 07.6) -->
+    <!-- Nav login-state UI -->
     <script src="js/nav-auth.js"></script>
 
+    <!-- Fase 2: Live Dashboard Controller -->
+    <script>
+    (function initDashboardWidgets() {
+        const $ = id => document.getElementById(id);
+
+        function fmtUsd(n) {
+            return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function applyTicker(priceEl, badgeEl, price, pct) {
+            priceEl.textContent = fmtUsd(price);
+            const val = Number(pct);
+            const sign = val >= 0 ? '+' : '';
+            badgeEl.textContent = `${sign}${val.toFixed(2)}%`;
+            badgeEl.className = val >= 0
+                ? 'text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-400'
+                : 'text-[11px] font-bold px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-400';
+        }
+
+        // 1. Live BTC & ETH Prices (Binance primary, CoinGecko fallback)
+        async function loadPrices() {
+            try {
+                const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=%5B%22BTCUSDT%22,%22ETHUSDT%22%5D');
+                if (!res.ok) throw new Error('Binance HTTP ' + res.status);
+                const list = await res.json();
+                const btc = list.find(i => i.symbol === 'BTCUSDT');
+                const eth = list.find(i => i.symbol === 'ETHUSDT');
+                if (btc) applyTicker($('dashBtcPrice'), $('dashBtcChange'), btc.lastPrice, btc.priceChangePercent);
+                if (eth) applyTicker($('dashEthPrice'), $('dashEthChange'), eth.lastPrice, eth.priceChangePercent);
+            } catch (_) {
+                try {
+                    const cg = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true');
+                    const data = await cg.json();
+                    if (data.bitcoin) applyTicker($('dashBtcPrice'), $('dashBtcChange'), data.bitcoin.usd, data.bitcoin.usd_24h_change);
+                    if (data.ethereum) applyTicker($('dashEthPrice'), $('dashEthChange'), data.ethereum.usd, data.ethereum.usd_24h_change);
+                } catch (err) {
+                    console.warn('Price feed unavailable:', err);
+                }
+            }
+            const now = new Date();
+            $('dashLastUpdated').textContent = 'Update ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // 2. Fear & Greed Index
+        async function loadFng() {
+            try {
+                const res = await fetch('https://api.alternative.me/fng/?limit=1');
+                const json = await res.json();
+                const item = json && json.data && json.data[0];
+                if (!item) return;
+                const score = Number(item.value);
+                $('dashFngValue').textContent = score;
+                const badge = $('dashFngBadge');
+                badge.textContent = item.value_classification;
+                if (score <= 30) {
+                    badge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-400';
+                } else if (score >= 65) {
+                    badge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-400';
+                } else {
+                    badge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300';
+                }
+            } catch (err) {
+                console.warn('FnG feed unavailable:', err);
+            }
+        }
+
+        // 3. Journal Summary from Supabase (if logged in)
+        async function loadJournalSummary() {
+            const card = $('dashJournalCard');
+            const tag = $('dashJournalTag');
+            const primary = $('dashJournalPrimary');
+            const secondary = $('dashJournalSecondary');
+
+            const sb = window.supabaseClient || window.sb || window.db || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
+            if (!sb || !sb.auth) {
+                primary.textContent = 'Mode Tamu';
+                secondary.textContent = 'Login untuk sinkronisasi journal';
+                card.href = 'login.html';
+                return;
+            }
+
+            try {
+                const { data: { session } } = await sb.auth.getSession();
+                if (!session || !session.user) {
+                    tag.textContent = 'Offline';
+                    primary.textContent = 'Belum Login';
+                    secondary.textContent = 'Masuk untuk lihat statistik PnL →';
+                    card.href = 'login.html';
+                    return;
+                }
+
+                const { data: trades, error } = await sb
+                    .from('trades')
+                    .select('pnl')
+                    .eq('user_id', session.user.id);
+
+                if (error) throw error;
+
+                if (!trades || trades.length === 0) {
+                    tag.textContent = '0 Trade';
+                    tag.className = 'text-[11px] font-bold px-2 py-0.5 rounded-md bg-brand-cyan/10 text-brand-cyan';
+                    primary.textContent = 'Belum Ada Data';
+                    secondary.textContent = 'Catat transaksi pertama kamu →';
+                    return;
+                }
+
+                const total = trades.length;
+                const wins = trades.filter(t => Number(t.pnl) > 0).length;
+                const winRate = ((wins / total) * 100).toFixed(1);
+                const totalPnl = trades.reduce((acc, t) => acc + (Number(t.pnl) || 0), 0);
+                const pnlSign = totalPnl >= 0 ? '+' : '-';
+
+                tag.textContent = `${total} Trade`;
+                tag.className = 'text-[11px] font-bold px-2 py-0.5 rounded-md bg-brand-cyan/10 text-brand-cyan';
+                primary.textContent = `${pnlSign}$${Math.abs(totalPnl).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                primary.className = totalPnl >= 0
+                    ? 'text-2xl font-extrabold tracking-tight text-emerald-400 truncate'
+                    : 'text-2xl font-extrabold tracking-tight text-rose-400 truncate';
+                secondary.textContent = `Win Rate ${winRate}% (${wins}/${total} menang)`;
+            } catch (err) {
+                tag.textContent = 'Ready';
+                primary.textContent = 'Buka Journal';
+                secondary.textContent = 'Lihat & evaluasi histori trade →';
+            }
+        }
+
+        // 4. Latest 2 Articles from articles.json
+        async function loadLatestArticles() {
+            const box = $('dashLatestArticles');
+            try {
+                const res = await fetch('articles.json');
+                const data = await res.json();
+                const articles = (data.articles || [])
+                    .slice()
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, 2);
+
+                if (!articles.length) {
+                    box.innerHTML = '<div class="text-xs text-gray-500">Belum ada artikel tersedia.</div>';
+                    return;
+                }
+
+                box.innerHTML = articles.map(a => {
+                    const dateStr = new Date(a.date + 'T00:00:00').toLocaleDateString('id-ID', {
+                        day: 'numeric', month: 'short', year: 'numeric'
+                    });
+                    return `
+                        <a href="artikel.html?id=${encodeURIComponent(a.id)}" class="group rounded-xl bg-white/[0.025] hover:bg-white/[0.05] border border-white/5 hover:border-brand-cyan/30 p-3.5 transition-all flex flex-col justify-between gap-2">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand-cyan bg-brand-cyan/10 px-2 py-0.5 rounded-full">${a.category}</span>
+                                <span class="text-[10px] text-gray-500">${dateStr}</span>
+                            </div>
+                            <div class="text-sm font-bold text-gray-100 group-hover:text-brand-cyan transition-colors line-clamp-1">${a.title}</div>
+                        </a>
+                    `;
+                }).join('');
+            } catch (_) {
+                box.innerHTML = '<div class="text-xs text-gray-500">Gagal memuat preview artikel.</div>';
+            }
+        }
+
+        loadPrices();
+        loadFng();
+        loadJournalSummary();
+        loadLatestArticles();
+    })();
+    </script>
 </body>
 </html>
