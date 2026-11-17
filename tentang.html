@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Tentang MARKET INSIGHT: proyek belajar coding yang berkembang jadi kumpulan tools trading gratis. Cerita, teknologi yang dipakai, dan disclaimer risiko.">
-<meta property="og:title" content="Tentang | MARKET INSIGHT">
-<meta property="og:description" content="Cerita di balik MARKET INSIGHT, teknologi yang dipakai, dan disclaimer risiko trading.">
+<meta name="description" content="Tentang MARKET INSIGHT: platform independen untuk analisis pasar kripto, manajemen risiko, dan evaluasi jurnal trading berbasis data.">
+<meta property="og:title" content="Tentang & Metodologi | MARKET INSIGHT">
+<meta property="og:description" content="Profil pengembang, arsitektur teknologi, metodologi rumus manajemen risiko, dan disclaimer MARKET INSIGHT.">
 <meta property="og:type" content="website">
-<title>Tentang | MARKET INSIGHT</title>
+<title>Tentang & Metodologi | MARKET INSIGHT</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,6 +53,17 @@
     .prose-id p { color: #9ca3af; line-height: 1.8; font-size: 15px; }
     .prose-id p + p { margin-top: 14px; }
     .prose-id strong { color: #e5e7eb; font-weight: 700; }
+    .formula-code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 12.5px;
+        color: #00F0FF;
+        background: rgba(0, 240, 255, 0.06);
+        border: 1px solid rgba(0, 240, 255, 0.16);
+        padding: 8px 12px;
+        border-radius: 10px;
+        display: block;
+        margin-top: 8px;
+    }
     :focus-visible { outline: 2px solid #00F0FF; outline-offset: 3px; border-radius: 8px; }
 </style>
 </head>
@@ -70,94 +81,117 @@
         <section class="text-center mb-14">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-cyan/10 border border-brand-cyan/20 text-brand-cyan text-xs font-bold uppercase tracking-widest mb-6">
                 <span class="w-2 h-2 rounded-full bg-brand-cyan animate-pulse"></span>
-                Tentang
+                Tentang &amp; Metodologi
             </div>
             <h1 class="text-4xl md:text-5xl font-extrabold leading-[1.1] tracking-tight mb-5">
-                Dari latihan coding <br class="hidden sm:block">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-cyan to-blue-500">jadi tools trading</span>
+                Menjembatani Rekayasa Web <br class="hidden sm:block">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-cyan to-blue-500">&amp; Disiplin Manajemen Risiko</span>
             </h1>
-            <p class="text-gray-400 text-base md:text-lg font-medium max-w-xl mx-auto leading-relaxed">
-                MARKET INSIGHT dimulai sebagai proyek belajar dan terus dikembangkan secara bertahap.
+            <p class="text-gray-400 text-base md:text-lg font-medium max-w-2xl mx-auto leading-relaxed">
+                Platform trading intelligence independen yang menggabungkan pemantauan pasar real-time, kalkulasi ukuran posisi presisi, dan evaluasi performa berbasis data.
             </p>
         </section>
 
         <div class="flex flex-col gap-6">
 
-            <!-- Siapa -->
+            <!-- Profil Pengembang -->
             <section class="glass-card rounded-3xl border border-brand-border p-6 md:p-8">
-                <h2 class="text-lg font-bold mb-4 flex items-center gap-3"><i class="fa-solid fa-user text-brand-cyan text-base"></i>Siapa di balik ini</h2>
+                <h2 class="text-lg font-bold mb-4 flex items-center gap-3"><i class="fa-solid fa-user-shield text-brand-cyan text-base"></i>Profil Pengembang</h2>
                 <div class="prose-id">
-                    <p>MARKET INSIGHT dikelola oleh <strong>@Eva_Edith</strong>, seorang pembelajar otodidak dari Indonesia yang sedang mendalami pemrograman web dan tertarik pada pasar kripto.</p>
-                    <p>Ini bukan perusahaan atau lembaga keuangan. Semua tools dibuat dan dirawat oleh satu orang, jadi pembaruan dilakukan bertahap sambil terus belajar.</p>
+                    <p>MARKET INSIGHT dirancang dan dikembangkan secara independen oleh <strong>@Eva_Edith</strong>, seorang <strong>Web Developer</strong> sekaligus <strong>Cryptocurrency Trader</strong> asal Indonesia yang berfokus pada pengembangan aplikasi web finansial dan analisis struktur pasar.</p>
+                    <p>Berangkat dari kebutuhan praktis di meja trading, platform ini dibangun bukan sebagai institusi keuangan atau penyedia sinyal, melainkan sebagai <strong>ruang kerja analitis (trading workspace)</strong> yang ringan, transparan, dan dapat diakses gratis oleh trader ritel.</p>
                 </div>
             </section>
 
-            <!-- Kenapa -->
+            <!-- Filosofi & Ekosistem -->
             <section class="glass-card rounded-3xl border border-brand-border p-6 md:p-8">
-                <h2 class="text-lg font-bold mb-4 flex items-center gap-3"><i class="fa-solid fa-lightbulb text-brand-cyan text-base"></i>Kenapa proyek ini dibuat</h2>
+                <h2 class="text-lg font-bold mb-4 flex items-center gap-3"><i class="fa-solid fa-compass-drafting text-brand-cyan text-base"></i>Filosofi &amp; Alur Kerja Ekosistem</h2>
                 <div class="prose-id">
-                    <p>Awalnya sederhana: <strong>latihan coding</strong>. Agar belajar terasa nyata, dipilih sesuatu yang benar-benar berguna, yaitu kalkulator untuk menghitung ukuran posisi sebelum entry.</p>
-                    <p>Kesalahan umum pemula adalah menentukan ukuran posisi berdasarkan perasaan, bukan berdasarkan risiko. Kalkulator ini dibuat supaya hitungannya jelas dan bisa dicek ulang sebelum order dikirim.</p>
-                    <p>Dari situ proyek berkembang: ditambah terminal pemantau harga, lalu komunitas Telegram untuk berdiskusi dan belajar bersama. Semuanya gratis dan terbuka.</p>
+                    <p>Mayoritas kegagalan dalam perdagangan aset kripto—khususnya instrumen derivatif dan futures—bukan disebabkan oleh kurangnya indikator, melainkan absennya <strong>parameter risiko yang terukur sebelum eksekusi</strong>.</p>
+                    <p>MARKET INSIGHT menyatukan tiga tahapan utama pengambilan keputusan trader dalam satu alur terintegrasi:</p>
+                </div>
+                <div class="grid sm:grid-cols-3 gap-3 mt-5 text-xs">
+                    <div class="rounded-2xl bg-white/[0.03] border border-brand-border p-4">
+                        <div class="text-brand-cyan font-extrabold uppercase tracking-wider mb-1">01 · Observasi</div>
+                        <div class="font-bold text-white text-sm mb-1">Market &amp; Explorer</div>
+                        <p class="text-gray-400 leading-relaxed">Membaca sentimen makro, likuiditas pasangan USDT, dan struktur harga multi-timeframe.</p>
+                    </div>
+                    <div class="rounded-2xl bg-white/[0.03] border border-brand-border p-4">
+                        <div class="text-brand-cyan font-extrabold uppercase tracking-wider mb-1">02 · Kalkulasi</div>
+                        <div class="font-bold text-white text-sm mb-1">Risk &amp; Position Sizing</div>
+                        <p class="text-gray-400 leading-relaxed">Menentukan ukuran posisi dan margin secara matematis berdasarkan batas toleransi kerugian.</p>
+                    </div>
+                    <div class="rounded-2xl bg-white/[0.03] border border-brand-border p-4">
+                        <div class="text-brand-cyan font-extrabold uppercase tracking-wider mb-1">03 · Evaluasi</div>
+                        <div class="font-bold text-white text-sm mb-1">Trading Journal</div>
+                        <p class="text-gray-400 leading-relaxed">Mencatat setiap transaksi ke database cloud untuk mengukur Win Rate, Profit Factor, dan Drawdown.</p>
+                    </div>
                 </div>
             </section>
 
-            <!-- Stack -->
+            <!-- Metodologi & Rumus -->
+            <section id="metodologi" class="glass-card rounded-3xl border border-brand-border p-6 md:p-8">
+                <h2 class="text-lg font-bold mb-5 flex items-center gap-3"><i class="fa-solid fa-square-root-variable text-brand-cyan text-base"></i>Transparansi Metodologi &amp; Rumus</h2>
+                <div class="space-y-4 text-sm">
+                    <div class="rounded-2xl bg-white/[0.025] border border-brand-border p-4">
+                        <div class="font-bold text-white">1. Position Size Calculator</div>
+                        <p class="text-gray-400 text-xs mt-1 leading-relaxed">Ukuran posisi dihitung mundur dari nominal risiko maksimal yang siap ditanggung, bukan dari besaran leverage.</p>
+                        <code class="formula-code">Risiko Nominal ($) = Modal × (% Risiko ÷ 100)<br>Position Size ($) = Risiko Nominal ÷ (% Jarak Stop Loss ÷ 100)<br>Margin Terpakai ($) = Position Size ÷ Leverage</code>
+                    </div>
+                    <div class="rounded-2xl bg-white/[0.025] border border-brand-border p-4">
+                        <div class="font-bold text-white">2. Metrik Evaluasi Trading Journal</div>
+                        <p class="text-gray-400 text-xs mt-1 leading-relaxed">Setiap entri jurnal dihitung otomatis untuk mengevaluasi konsistensi ekspektasi sistem trading:</p>
+                        <code class="formula-code">Profit Factor = Total Gross Profit ÷ |Total Gross Loss|<br>R-Multiple = Realized PnL ($) ÷ Initial Risk Amount ($)<br>Max Drawdown = Penurunan terbesar dari puncak kurva ekuitas kumulatif</code>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stack & Arsitektur -->
             <section class="glass-card rounded-3xl border border-brand-border p-6 md:p-8">
-                <h2 class="text-lg font-bold mb-5 flex items-center gap-3"><i class="fa-solid fa-code text-brand-cyan text-base"></i>Teknologi yang dipakai</h2>
+                <h2 class="text-lg font-bold mb-5 flex items-center gap-3"><i class="fa-solid fa-layer-group text-brand-cyan text-base"></i>Arsitektur &amp; Tech Stack</h2>
                 <ul class="grid sm:grid-cols-2 gap-3 text-sm">
                     <li class="flex gap-3 rounded-2xl bg-white/[0.03] border border-brand-border p-4">
-                        <i class="fa-solid fa-mobile-screen text-brand-cyan mt-1"></i>
-                        <div><div class="font-bold">Dikerjakan dari Android</div><div class="text-gray-500 text-xs mt-0.5">Termux dan editor kode di ponsel</div></div>
+                        <i class="fa-brands fa-js text-brand-cyan mt-1"></i>
+                        <div><div class="font-bold">Modular Vanilla JS &amp; ES6+</div><div class="text-gray-400 text-xs mt-0.5">Komponen navigasi terpusat dan arsitektur ringan tanpa overhead framework berat</div></div>
                     </li>
                     <li class="flex gap-3 rounded-2xl bg-white/[0.03] border border-brand-border p-4">
-                        <i class="fa-brands fa-html5 text-brand-cyan mt-1"></i>
-                        <div><div class="font-bold">HTML, CSS, JavaScript</div><div class="text-gray-500 text-xs mt-0.5">Tanpa framework berat, ringan dibuka</div></div>
+                        <i class="fa-solid fa-database text-brand-cyan mt-1"></i>
+                        <div><div class="font-bold">Supabase Auth &amp; PostgreSQL RLS</div><div class="text-gray-400 text-xs mt-0.5">Autentikasi sesi dan isolasi data jurnal serta watchlist per pengguna dengan Row Level Security</div></div>
                     </li>
                     <li class="flex gap-3 rounded-2xl bg-white/[0.03] border border-brand-border p-4">
-                        <i class="fa-solid fa-wind text-brand-cyan mt-1"></i>
-                        <div><div class="font-bold">Tailwind CSS</div><div class="text-gray-500 text-xs mt-0.5">Tampilan konsisten di semua halaman</div></div>
+                        <i class="fa-solid fa-chart-candlestick text-brand-cyan mt-1"></i>
+                        <div><div class="font-bold">TradingView Lightweight Charts™</div><div class="text-gray-400 text-xs mt-0.5">Rendering grafik candlestick interaktif performa tinggi berbasis HTML5 Canvas</div></div>
                     </li>
                     <li class="flex gap-3 rounded-2xl bg-white/[0.03] border border-brand-border p-4">
-                        <i class="fa-solid fa-chart-area text-brand-cyan mt-1"></i>
-                        <div><div class="font-bold">Widget TradingView</div><div class="text-gray-500 text-xs mt-0.5">Data harga dan chart real-time</div></div>
+                        <i class="fa-solid fa-bolt text-brand-cyan mt-1"></i>
+                        <div><div class="font-bold">Multi-Source API &amp; TTL Caching</div><div class="text-gray-400 text-xs mt-0.5">Integrasi Binance Spot, CoinGecko, &amp; Alternative.me dengan fallback offline storage</div></div>
                     </li>
                     <li class="flex gap-3 rounded-2xl bg-white/[0.03] border border-brand-border p-4 sm:col-span-2">
                         <i class="fa-brands fa-github text-brand-cyan mt-1"></i>
-                        <div><div class="font-bold">GitHub dan Netlify</div><div class="text-gray-500 text-xs mt-0.5">Penyimpanan kode dan hosting situs</div></div>
+                        <div><div class="font-bold">GitHub &amp; Continuous Static Deployment</div><div class="text-gray-400 text-xs mt-0.5">Pengelolaan versi kode terbuka dengan distribusi CDN cepat melalui Netlify / GitHub Pages</div></div>
                     </li>
                 </ul>
             </section>
 
-            <!-- Proses -->
-            <section class="glass-card rounded-3xl border border-brand-border p-6 md:p-8">
-                <h2 class="text-lg font-bold mb-4 flex items-center gap-3"><i class="fa-solid fa-seedling text-brand-cyan text-base"></i>Proses belajar</h2>
-                <div class="prose-id">
-                    <p>Setiap halaman dibuat dengan cara yang sama: dicoba, ditemukan yang rusak, diperbaiki, lalu diulang. Masalah seperti tautan antar halaman yang salah domain atau data yang diblokir saat dipanggil dari browser, semuanya muncul dan diselesaikan selama pengerjaan.</p>
-                    <p>Proyek ini sengaja dibiarkan terbuka untuk perbaikan. Saran dan laporan bug sangat membantu, silakan kirim lewat Telegram.</p>
-                </div>
-            </section>
-
             <!-- Disclaimer -->
             <section id="disclaimer" class="rounded-3xl border border-amber-400/30 bg-amber-400/[0.06] p-6 md:p-8">
-                <h2 class="text-lg font-bold mb-4 flex items-center gap-3 text-amber-200"><i class="fa-solid fa-triangle-exclamation text-amber-300 text-base"></i>Disclaimer risiko</h2>
+                <h2 class="text-lg font-bold mb-4 flex items-center gap-3 text-amber-200"><i class="fa-solid fa-triangle-exclamation text-amber-300 text-base"></i>Disclaimer Risiko</h2>
                 <div class="prose-id">
-                    <p>Semua konten dan tools di situs ini hanya untuk <strong>tujuan edukasi dan informasi</strong>. Ini bukan nasihat keuangan, ajakan membeli atau menjual aset, maupun jaminan hasil.</p>
-                    <p>Perdagangan aset kripto, terutama futures dengan leverage, <strong>berisiko tinggi</strong> dan dapat menyebabkan kehilangan sebagian atau seluruh modal. Harga sangat fluktuatif dan hasil masa lalu tidak menjamin hasil di masa depan.</p>
-                    <p>Hasil kalkulator berupa estimasi. Fee, funding, slippage, tingkatan margin, dan aturan tiap exchange belum diperhitungkan, sehingga angka di exchange bisa berbeda. Selalu verifikasi sebelum membuka posisi.</p>
-                    <p>Keputusan trading sepenuhnya tanggung jawab masing-masing pengguna. Gunakan hanya dana yang siap kamu tanggung kerugiannya.</p>
+                    <p>Seluruh fitur, kalkulasi, artikel, dan data pasar di MARKET INSIGHT disediakan semata-mata untuk <strong>tujuan edukasi, riset mandiri, dan alat bantu manajemen risiko</strong>. Platform ini tidak memberikan nasihat keuangan (financial advice) maupun ajakan transaksi.</p>
+                    <p>Perdagangan aset kripto—terutama kontrak futures dengan leverage—memiliki <strong>tingkat risiko tinggi</strong> dan berpotensi menyebabkan kehilangan seluruh modal. Kinerja historis yang tercatat di jurnal tidak menjamin hasil di masa mendatang.</p>
+                    <p>Angka estimasi likuidasi dan ukuran posisi pada kalkulator belum memperhitungkan biaya transaksi (maker/taker fee), funding rate, slippage, maupun aturan margin bertingkat di masing-masing bursa. Selalu verifikasi parameter order sebelum mengeksekusi posisi.</p>
                 </div>
             </section>
 
             <!-- CTA -->
             <section class="glass-card rounded-3xl border border-brand-border p-6 md:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
                 <div>
-                    <h2 class="text-lg font-bold">Ada saran atau menemukan bug?</h2>
-                    <p class="text-gray-400 text-sm mt-1">Langsung kirim pesan ke <a class="text-brand-cyan font-bold" href="https://t.me/Eva_Edith" target="_blank" rel="noopener noreferrer">@Eva_Edith</a> atau gabung komunitasnya.</p>
+                    <h2 class="text-lg font-bold">Diskusi Pasar &amp; Masukan Pengembangan</h2>
+                    <p class="text-gray-400 text-sm mt-1">Hubungi pengembang langsung di <a class="text-brand-cyan font-bold" href="https://t.me/Eva_Edith" target="_blank" rel="noopener noreferrer">@Eva_Edith</a> atau ikuti pembaruan riset di komunitas.</p>
                 </div>
                 <a href="https://t.me/MARKETINSIGHT7" target="_blank" rel="noopener noreferrer"
                    class="inline-flex items-center justify-center gap-3 px-6 py-3.5 bg-brand-cyan hover:bg-brand-cyanHover text-brand-bg font-bold rounded-2xl transition-all duration-300 shadow-[0_0_20px_rgba(0,240,255,0.3)] hover:-translate-y-1 whitespace-nowrap">
-                    <i class="fa-brands fa-telegram text-xl"></i> Join Telegram
+                    <i class="fa-brands fa-telegram text-xl"></i> Join Community
                 </a>
             </section>
         </div>
@@ -166,7 +200,7 @@
     <footer class="w-full text-center py-8 relative z-10 mt-auto border-t border-white/5">
         <p class="text-gray-500 text-xs font-medium tracking-wider">
             <a href="index.html" class="hover:text-brand-cyan">Beranda</a> &nbsp;·&nbsp;
-            <a href="tentang.html" class="hover:text-brand-cyan">Tentang</a> &nbsp;·&nbsp;
+            <a href="tentang.html#metodologi" class="hover:text-brand-cyan">Metodologi</a> &nbsp;·&nbsp;
             <a href="tentang.html#disclaimer" class="hover:text-brand-cyan">Disclaimer</a>
         </p>
         <p class="text-gray-600 text-xs font-medium tracking-wider mt-3">
