@@ -1,28 +1,26 @@
 /**
- * MARKET INSIGHT - Centralized Navigation Component
- * Merender navbar konsisten di seluruh halaman & mendeteksi active state otomatis.
+ * MARKET INSIGHT - Centralized Navigation Component (Stage 8.1)
+ * Menyatu dengan tema #080B12 + #00F0FF dan kompatibel 100% dengan js/nav-auth.js (#navAuthArea).
  */
 
 (function initMarketInsightNavbar() {
   const NAV_ITEMS = [
     { label: 'Dashboard', href: 'index.html', matches: ['index.html', ''] },
-    { label: 'Market Overview', href: 'market-overview.html', matches: ['market-overview.html'] },
-    { label: 'Coin Explorer', href: 'coin-explorer.html', matches: ['coin-explorer.html'] },
+    { label: 'Market', href: 'market-overview.html', matches: ['market-overview.html'] },
+    { label: 'Explorer', href: 'coin-explorer.html', matches: ['coin-explorer.html'] },
     { label: 'Calendar', href: 'calendar.html', matches: ['calendar.html'] },
     { label: 'Kalkulator', href: 'kalkulator.html', matches: ['kalkulator.html'] },
     { label: 'Journal', href: 'journal.html', matches: ['journal.html'] },
     { label: 'Insight', href: 'insight.html', matches: ['insight.html', 'artikel.html'] },
-    { label: 'Metodologi & About', href: 'tentang.html', matches: ['tentang.html'] }
+    { label: 'Tentang', href: 'tentang.html', matches: ['tentang.html'] }
   ];
 
-  // Ambil nama file dari URL saat ini
   const currentPath = window.location.pathname.split('/').pop().toLowerCase();
 
   function isActive(item) {
     return item.matches.includes(currentPath);
   }
 
-  // Inject CSS terisolasi agar tampilan seragam di desktop & mobile
   function injectNavbarStyles() {
     if (document.getElementById('mi-navbar-styles')) return;
 
@@ -32,18 +30,18 @@
       .mi-navbar {
         position: sticky;
         top: 0;
-        z-index: 1000;
-        background: rgba(13, 17, 23, 0.92);
-        backdrop-filter: blur(12px);
+        z-index: 50;
+        width: 100%;
+        background: rgba(8, 11, 18, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        color: #f0f6fc;
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       }
-      .mi-nav-container {
-        max-width: 1320px;
+      .mi-nav-inner {
+        max-width: 1280px;
         margin: 0 auto;
-        padding: 0 20px;
-        height: 64px;
+        padding: 16px 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -52,21 +50,29 @@
       .mi-brand {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
         text-decoration: none;
         color: #ffffff;
         font-weight: 700;
+        letter-spacing: 0.1em;
         font-size: 1.05rem;
-        letter-spacing: 0.4px;
         white-space: nowrap;
       }
-      .mi-brand-badge {
-        background: linear-gradient(135deg, #2563eb, #0ea5e9);
-        color: #fff;
-        font-size: 0.72rem;
-        padding: 3px 7px;
-        border-radius: 6px;
-        font-weight: 800;
+      .mi-brand-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: rgba(0, 240, 255, 0.1);
+        border: 1px solid rgba(0, 240, 255, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #00F0FF;
+        transition: all 0.25s ease;
+      }
+      .mi-brand:hover .mi-brand-icon {
+        background: #00F0FF;
+        color: #080B12;
       }
       .mi-nav-links {
         display: flex;
@@ -75,71 +81,48 @@
         list-style: none;
         margin: 0;
         padding: 0;
-        overflow-x: auto;
       }
       .mi-nav-links a {
         text-decoration: none;
         color: #9ca3af;
-        font-size: 0.875rem;
-        font-weight: 500;
-        padding: 8px 12px;
-        border-radius: 8px;
-        transition: all 0.18s ease;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 7px 12px;
+        border-radius: 10px;
+        transition: all 0.2s ease;
         white-space: nowrap;
       }
       .mi-nav-links a:hover {
         color: #ffffff;
-        background: rgba(255, 255, 255, 0.06);
+        background: rgba(255, 255, 255, 0.05);
       }
       .mi-nav-links a.active {
-        color: #38bdf8;
-        background: rgba(56, 189, 248, 0.12);
-        font-weight: 600;
+        color: #00F0FF;
+        background: rgba(0, 240, 255, 0.1);
+        border: 1px solid rgba(0, 240, 255, 0.2);
       }
       .mi-nav-right {
         display: flex;
         align-items: center;
-        gap: 10px;
-      }
-      .mi-auth-btn {
-        text-decoration: none;
-        font-size: 0.85rem;
-        font-weight: 600;
-        padding: 7px 14px;
-        border-radius: 8px;
-        transition: all 0.18s ease;
-        white-space: nowrap;
-      }
-      .mi-btn-login {
-        color: #e5e7eb;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-      }
-      .mi-btn-login:hover {
-        background: rgba(255, 255, 255, 0.08);
-      }
-      .mi-btn-primary {
-        background: #2563eb;
-        color: #ffffff;
-        border: 1px solid #2563eb;
-      }
-      .mi-btn-primary:hover {
-        background: #1d4ed8;
+        gap: 12px;
       }
       .mi-mobile-toggle {
         display: none;
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: #f0f6fc;
-        padding: 6px 10px;
-        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #ffffff;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
         cursor: pointer;
-        font-size: 1.1rem;
+        align-items: center;
+        justify-content: center;
       }
       .mi-mobile-drawer {
         display: none;
         flex-direction: column;
-        padding: 12px 20px 20px;
-        background: #0d1117;
+        padding: 12px 24px 20px;
+        background: #080B12;
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         gap: 6px;
       }
@@ -149,23 +132,21 @@
       .mi-mobile-drawer a {
         text-decoration: none;
         color: #9ca3af;
-        padding: 10px 12px;
-        border-radius: 8px;
-        font-size: 0.92rem;
-      }
-      .mi-mobile-drawer a.active {
-        color: #38bdf8;
-        background: rgba(56, 189, 248, 0.12);
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 0.9rem;
         font-weight: 600;
       }
-      @media (max-width: 1024px) {
+      .mi-mobile-drawer a.active {
+        color: #00F0FF;
+        background: rgba(0, 240, 255, 0.1);
+      }
+      @media (max-width: 1080px) {
         .mi-nav-links {
           display: none;
         }
         .mi-mobile-toggle {
           display: inline-flex;
-          align-items: center;
-          justify-content: center;
         }
       }
     `;
@@ -194,9 +175,11 @@
 
     target.innerHTML = `
       <header class="mi-navbar">
-        <div class="mi-nav-container">
+        <div class="mi-nav-inner">
           <a href="index.html" class="mi-brand">
-            <span class="mi-brand-badge">MI</span>
+            <div class="mi-brand-icon">
+              <i class="fa-solid fa-chart-line text-sm"></i>
+            </div>
             <span>MARKET INSIGHT</span>
           </a>
 
@@ -205,26 +188,22 @@
           </ul>
 
           <div class="mi-nav-right">
-            <!-- Slot default sebelum js/nav-auth.js mengecek session Supabase -->
-            <div id="nav-auth-slot" style="display:flex; align-items:center; gap:8px;">
-              <a href="login.html" class="mi-auth-btn mi-btn-login">Login</a>
-              <a href="register.html" class="mi-auth-btn mi-btn-primary">Daftar</a>
-            </div>
-            <button type="button" class="mi-mobile-toggle" id="mi-mobile-btn" aria-label="Buka Menu">
-              ☰
+            <!-- Slot asli milik js/nav-auth.js -->
+            <div id="navAuthArea" class="flex items-center gap-3"></div>
+            <button type="button" class="mi-mobile-toggle" id="miMobileToggle" aria-label="Menu">
+              <i class="fa-solid fa-bars"></i>
             </button>
           </div>
         </div>
 
-        <nav class="mi-mobile-drawer" id="mi-mobile-drawer">
+        <nav class="mi-mobile-drawer" id="miMobileDrawer">
           ${mobileLinksHTML}
         </nav>
       </header>
     `;
 
-    // Toggle menu mobile
-    const toggleBtn = document.getElementById('mi-mobile-btn');
-    const drawer = document.getElementById('mi-mobile-drawer');
+    const toggleBtn = document.getElementById('miMobileToggle');
+    const drawer = document.getElementById('miMobileDrawer');
     if (toggleBtn && drawer) {
       toggleBtn.addEventListener('click', () => {
         drawer.classList.toggle('open');
