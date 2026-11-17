@@ -90,7 +90,7 @@
             </p>
         </section>
 
-        <!-- FASE 2: Live Command Center Widgets -->
+        <!-- FASE 2 + 4: Live Command Center Widgets (with API Cache) -->
         <section class="w-full mb-14 space-y-5" aria-label="Live Dashboard Overview">
             <div class="flex items-center justify-between px-1">
                 <div class="flex items-center gap-2">
@@ -314,8 +314,9 @@
     </footer>
     <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
-    <!-- Centralized Navbar Script -->
+    <!-- Centralized Navbar & API Cache -->
     <script src="js/navbar.js"></script>
+    <script src="js/api-cache.js"></script>
     <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Supabase Configuration -->
@@ -325,10 +326,11 @@
     <!-- Nav login-state UI -->
     <script src="js/nav-auth.js"></script>
 
-    <!-- Fase 2: Live Dashboard Controller -->
+    <!-- Fase 2 + 4: Live Dashboard Controller -->
     <script>
     (function initDashboardWidgets() {
         const $ = id => document.getElementById(id);
+        const cache = window.miApiCache;
 
         function fmtUsd(n) {
             return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -344,37 +346,65 @@
                 : 'text-[11px] font-bold px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-400';
         }
 
-        // 1. Live BTC & ETH Prices (Binance primary, CoinGecko fallback)
+        // 1. Live BTC & ETH Prices (TTL 45s + localStorage Fallback)
         async function loadPrices() {
-            try {
-                const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=%5B%22BTCUSDT%22,%22ETHUSDT%22%5D');
-                if (!res.ok) throw new Error('Binance HTTP ' + res.status);
-                const list = await res.json();
-                const btc = list.find(i => i.symbol === 'BTCUSDT');
-                const eth = list.find(i => i.symbol === 'ETHUSDT');
-                if (btc) applyTicker($('dashBtcPrice'), $('dashBtcChange'), btc.lastPrice, btc.priceChangePercent);
-                if (eth) applyTicker($('dashEthPrice'), $('dashEthChange'), eth.lastPrice, eth.priceChangePercent);
-            } catch (_) {
+            const fetchBtcEth = async () => {
                 try {
+                    const res = await fetch('https://data-api.binance.vision/api/v3/ticker/24hr?symbols=%5B%22BTCUSDT%22,%22ETHUSDT%22%5D');
+                    if (!res.ok) throw new Error('Binance HTTP ' + res.status);
+                    const list = await res.json();
+                    const btc = list.find(i => i.symbol === 'BTCUSDT');
+                    const eth = list.find(i => i.symbol === 'ETHUSDT');
+                    return {
+                        btc: btc ? { price: btc.lastPrice, pct: btc.priceChangePercent } : null,
+                        eth: eth ? { price: eth.lastPrice, pct: eth.priceChangePercent } : null
+                    };
+                } catch (_) {
                     const cg = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true');
+                    if (!cg.ok) throw new Error('CoinGecko HTTP ' + cg.status);
                     const data = await cg.json();
-                    if (data.bitcoin) applyTicker($('dashBtcPrice'), $('dashBtcChange'), data.bitcoin.usd, data.bitcoin.usd_24h_change);
-                    if (data.ethereum) applyTicker($('dashEthPrice'), $('dashEthChange'), data.ethereum.usd, data.ethereum.usd_24h_change);
-                } catch (err) {
-                    console.warn('Price feed unavailable:', err);
+                    return {
+                        btc: data.bitcoin ? { price: data.bitcoin.usd, pct: data.bitcoin.usd_24h_change } : null,
+                        eth: data.ethereum ? { price: data.ethereum.usd, pct: data.ethereum.usd_24h_change } : null
+                    };
                 }
+            };
+
+            try {
+                const result = cache
+                    ? await cache.fetchWithCache('dash_btc_eth', fetchBtcEth, { ttl: 45000 })
+                    : { data: await fetchBtcEth(), source: 'network', ts: Date.now() };
+
+                const { btc, eth } = result.data;
+                if (btc) applyTicker($('dashBtcPrice'), $('dashBtcChange'), btc.price, btc.pct);
+                if (eth) applyTicker($('dashEthPrice'), $('dashEthChange'), eth.price, eth.pct);
+
+                const timeStr = new Date(result.ts).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                const tag = result.source === 'fallback' ? ' (Offline Cache)' : result.source === 'cache' ? ' (Cached)' : '';
+                $('dashLastUpdated').textContent = 'Update ' + timeStr + tag;
+            } catch (err) {
+                console.warn('Price feed unavailable:', err);
+                $('dashLastUpdated').textContent = 'Koneksi harga terganggu';
             }
-            const now = new Date();
-            $('dashLastUpdated').textContent = 'Update ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
         }
 
-        // 2. Fear & Greed Index
+        // 2. Fear & Greed Index (TTL 15 menit + localStorage Fallback)
         async function loadFng() {
-            try {
+            const fetchFng = async () => {
                 const res = await fetch('https://api.alternative.me/fng/?limit=1');
+                if (!res.ok) throw new Error('FnG HTTP ' + res.status);
                 const json = await res.json();
                 const item = json && json.data && json.data[0];
-                if (!item) return;
+                if (!item) throw new Error('FnG empty');
+                return item;
+            };
+
+            try {
+                const result = cache
+                    ? await cache.fetchWithCache('dash_fng', fetchFng, { ttl: 900000 })
+                    : { data: await fetchFng() };
+
+                const item = result.data;
                 const score = Number(item.value);
                 $('dashFngValue').textContent = score;
                 const badge = $('dashFngBadge');
@@ -391,7 +421,7 @@
             }
         }
 
-        // 3. Journal Summary from Supabase (window.miSupabase -> trading_journal)
+        // 3. Journal Summary from Supabase
         async function loadJournalSummary() {
             const card = $('dashJournalCard');
             const tag = $('dashJournalTag');
