@@ -233,8 +233,9 @@
 
     <footer class="wrap">MARKET INSIGHT · Independent Trading Intelligence &amp; Risk Management Platform<br>Market data: Binance public market data API · Charts: TradingView Lightweight Charts™</footer>
 
-    <!-- CENTRALIZED NAVBAR & SUPABASE -->
+    <!-- CENTRALIZED NAVBAR, API CACHE & SUPABASE -->
     <script src="js/navbar.js"></script>
+    <script src="js/api-cache.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase.js"></script>
     <script src="js/auth.js"></script>
@@ -245,6 +246,7 @@
         'use strict';
         const $ = id => document.getElementById(id);
         const supabase = window.miSupabase || null;
+        const cache = window.miApiCache || null;
         const API_BASES = [
             'https://data-api.binance.vision',
             'https://api.binance.com',
@@ -392,20 +394,22 @@
         }
         function coinName(base){ return NAME_MAP[base] || base; }
         function getCoin(symbol){ return allCoins.find(c => c.symbol === symbol); }
-        async function getJSON(path){
-            let lastError = null;
-            for (const base of API_BASES){
-                const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 11000);
-                try {
-                    const response = await fetch(base + path, {signal:controller.signal, cache:'no-store'});
-                    if (!response.ok) throw new Error('HTTP ' + response.status);
-                    return await response.json();
-                } catch(error){ lastError = error; }
-                finally { clearTimeout(timeout); }
+
+        async function getCachedJSON(cacheKey, path, ttlMs, forceRefresh){
+            const fetcher = () => cache
+                ? cache.fetchJsonMulti(API_BASES, path, 11000)
+                : fetch(API_BASES[0] + path).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+
+            if (!cache) {
+                return { data: await fetcher(), source: 'network', ts: Date.now() };
             }
-            throw lastError || new Error('Semua endpoint market tidak dapat diakses.');
+            return cache.fetchWithCache(cacheKey, fetcher, {
+                ttl: ttlMs,
+                forceRefresh: !!forceRefresh,
+                staleFallback: true
+            });
         }
+
         function normalizeCoins(tickers){
             return tickers
                 .filter(t => t.symbol && t.symbol.endsWith('USDT') && Number(t.lastPrice) > 0)
@@ -534,12 +538,16 @@
             $('chartStatus').textContent = '· Memuat candle';
             $('chartInfo').textContent = `${selectedSymbol} · ${activeInterval} · sumber Binance Spot`;
             try {
-                const data = await getJSON(`/api/v3/klines?symbol=${encodeURIComponent(selectedSymbol)}&interval=${encodeURIComponent(activeInterval)}&limit=240`);
+                const klineKey = `klines_${selectedSymbol}_${activeInterval}`;
+                const path = `/api/v3/klines?symbol=${encodeURIComponent(selectedSymbol)}&interval=${encodeURIComponent(activeInterval)}&limit=240`;
+                const res = await getCachedJSON(klineKey, path, 30000, false);
                 if (token !== chartRequestToken) return;
+                const data = res.data;
                 const candles = data.map(k => ({time:Math.floor(Number(k[0])/1000),open:Number(k[1]),high:Number(k[2]),low:Number(k[3]),close:Number(k[4])})).filter(k => Number.isFinite(k.time) && [k.open,k.high,k.low,k.close].every(Number.isFinite));
                 candleSeries.setData(candles);
                 chart.timeScale().fitContent();
-                $('chartStatus').textContent = `· ${candles.length} candle dimuat`;
+                const suffix = res.source === 'fallback' ? ' (Offline Fallback)' : res.source === 'cache' ? ' (Cache)' : '';
+                $('chartStatus').textContent = `· ${candles.length} candle dimuat${suffix}`;
             } catch(error){
                 if (token !== chartRequestToken) return;
                 $('chartStatus').textContent = '· Data chart gagal dimuat';
@@ -555,15 +563,17 @@
             }
             await loadChart();
         }
-        async function loadMarket(initial=false){
+        async function loadMarket(initial=false, forceRefresh=false){
             $('marketStatus').textContent = initial ? 'Menghubungkan ke market…' : 'Memperbarui data…';
             $('errorBox').style.display = 'none';
             try {
-                const tickers = await getJSON('/api/v3/ticker/24hr');
-                const nextCoins = normalizeCoins(tickers);
+                const res = await getCachedJSON('explorer_tickers_24hr', '/api/v3/ticker/24hr', 45000, forceRefresh);
+                const nextCoins = normalizeCoins(res.data);
                 if (!nextCoins.length) throw new Error('Endpoint berhasil diakses, tetapi pasangan USDT aktif tidak ditemukan.');
                 allCoins = nextCoins;
-                $('marketStatus').textContent = `Live · ${new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'})} WIB`;
+                const timeStr = new Date(res.ts).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+                const modeLabel = res.source === 'fallback' ? 'Offline Cache' : res.source === 'cache' ? 'Cached' : 'Live';
+                $('marketStatus').textContent = `${modeLabel} · ${timeStr} WIB`;
                 renderRows();
                 updateSelectedHeader();
                 if (initial){
@@ -603,13 +613,13 @@
             const row=e.target.closest('tr[data-symbol]');
             if(row && e.target === row && (e.key==='Enter'||e.key===' ')){e.preventDefault();selectCoin(row.dataset.symbol,true);}
         });
-        $('errorBox').addEventListener('click',e => {if(e.target.id==='retryBtn') loadMarket(!allCoins.length);});
+        $('errorBox').addEventListener('click',e => {if(e.target.id==='retryBtn') loadMarket(!allCoins.length, true);});
 
         $('watchCount').textContent = favorites.size;
         const chartReady = initChart();
         initWatchlistCloud();
-        loadMarket(true).then(() => {
-            if (chartReady) refreshTimer = setInterval(() => loadMarket(false),90000);
+        loadMarket(true, false).then(() => {
+            if (chartReady) refreshTimer = setInterval(() => loadMarket(false, true), 90000);
         });
         window.addEventListener('beforeunload',() => {if(refreshTimer) clearInterval(refreshTimer);if(resizeObserver) resizeObserver.disconnect();});
     })();
