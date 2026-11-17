@@ -1,6 +1,6 @@
 // ==================================================
 // MARKET INSIGHT — TRADING JOURNAL SUPABASE ENGINE
-// Stage 7.7
+// Stage 7.7 + Stage 8.3 (Cross-Feature Prefill)
 // ==================================================
 
 (async function () {
@@ -308,8 +308,18 @@
         const v = readForm();
         const box = $('formPreview');
 
-        if (!v.asset || !v.posSize || !v.entry || !v.exit || !v.sl) {
+        if (!v.posSize || !v.entry || !v.sl) {
             box.textContent = 'Isi form di atas untuk melihat estimasi qty, risk, dan PnL.';
+            return;
+        }
+
+        if (!v.exit) {
+            const qty = v.posSize / v.entry;
+            const risk = Math.abs(v.entry - v.sl) * qty;
+            box.innerHTML =
+                'Qty <b>' + qtyFmt(qty) +
+                '</b> · Risk <b>' + usd(risk) +
+                '</b> · <span class="cyan">Isi Harga Exit untuk menghitung PnL & R</span>';
             return;
         }
 
@@ -651,6 +661,41 @@
     }
 
     // ==============================================
+    // CROSS-FEATURE PREFILL (FASE 3)
+    // ==============================================
+
+    function applyQueryPrefill() {
+        const params = new URLSearchParams(window.location.search);
+        const qAsset = params.get('asset');
+        const qSide = (params.get('side') || '').toLowerCase();
+        const qPosSize = Number(params.get('posSize'));
+        const qEntry = Number(params.get('entry'));
+        const qSl = Number(params.get('sl'));
+
+        const hasData = qAsset || (qPosSize > 0) || (qEntry > 0) || (qSl > 0);
+        if (!hasData) return;
+
+        openForm();
+
+        if (qAsset) $('asset').value = qAsset;
+        if (qSide === 'short' || qSide === 'long') setSide(qSide);
+        if (qPosSize > 0) $('posSize').value = qPosSize;
+        if (qEntry > 0) $('entry').value = qEntry;
+        if (qSl > 0) $('sl').value = qSl;
+
+        updatePreview();
+
+        // Bersihkan URL parameter agar tidak terisi ulang jika di-refresh
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        $('formPanel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!qAsset) $('asset').focus();
+        else $('exit').focus();
+    }
+
+    // ==============================================
     // RENDER
     // ==============================================
 
@@ -669,6 +714,8 @@
     await loadTrades();
 
     await migrateLocalData();
+
+    applyQueryPrefill();
 
     console.log('MARKET INSIGHT: Trading Journal connected to Supabase.');
 
