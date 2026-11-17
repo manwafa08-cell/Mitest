@@ -44,15 +44,18 @@
         .source-chip i{color:var(--cyan)}
         .panel{background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border:1px solid var(--border);border-radius:20px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
         .chart-panel{padding:22px 24px 16px;margin-bottom:22px;scroll-margin-top:86px}
-        .chart-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:19px}
+        .chart-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:19px;flex-wrap:wrap}
         .asset-heading{display:flex;align-items:center;gap:13px;min-width:0}
         .asset-icon{height:45px;width:45px;flex:0 0 45px;border-radius:14px;display:grid;place-items:center;background:rgba(0,240,255,.09);border:1px solid rgba(0,240,255,.2);color:var(--cyan);font-weight:800;font-size:13px}
         .asset-title{font-size:19px;font-weight:800;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .asset-meta{color:var(--muted);font-size:11px;margin-top:4px}
+        .chart-top-right{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
         .price-block{text-align:right;min-width:0}
         .current-price{font-size:clamp(20px,3vw,27px);font-weight:800;letter-spacing:-.04em;line-height:1.25}
         .price-change{font-size:12px;font-weight:700;margin-top:5px}
         .positive{color:var(--green)!important}.negative{color:var(--red)!important}
+        .calc-cta-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 15px;border-radius:12px;background:rgba(0,240,255,.12);border:1px solid rgba(0,240,255,.32);color:var(--cyan);font-size:12px;font-weight:800;white-space:nowrap;transition:all .2s ease}
+        .calc-cta-btn:hover{background:var(--cyan);color:#080b12;transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,240,255,.25)}
         .chart-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:15px 0 10px}
         .chart-label{font-size:11px;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:8px}
         .timeframes{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
@@ -111,8 +114,10 @@
             .chart-panel{padding:17px 13px 13px;border-radius:16px}
             .chart-top{display:grid;grid-template-columns:minmax(0,1fr);gap:11px;align-items:start}
             .asset-heading{gap:9px;width:100%;min-width:0}.asset-icon{width:38px;height:38px;flex-basis:38px;border-radius:12px}.asset-title{font-size:15px}.asset-meta{font-size:9px}
-            .price-block{width:100%;display:flex;align-items:baseline;justify-content:space-between;gap:6px 12px;flex-wrap:wrap;text-align:left}
+            .chart-top-right{width:100%;justify-content:space-between}
+            .price-block{display:flex;align-items:baseline;gap:6px 10px;flex-wrap:wrap;text-align:left}
             .current-price{font-size:clamp(21px,6vw,25px);line-height:1.2;white-space:nowrap;max-width:100%;overflow:visible}.price-change{font-size:10px;margin-top:0;white-space:nowrap}
+            .calc-cta-btn{width:100%;justify-content:center}
             .chart-toolbar{align-items:flex-start;flex-direction:column;gap:8px}#chart{height:300px}.chart-foot{font-size:9px;align-items:flex-start;flex-direction:column;gap:4px}
             .market-panel{padding:16px 12px 14px;border-radius:16px}.market-head{align-items:flex-start;flex-direction:column;gap:7px}.controls{align-items:stretch}.tabs{width:100%}.tab{flex:1}.control-right{width:100%;justify-content:stretch}.search-box{flex:1;width:auto}.sort-select{max-width:125px}
             .table-wrap{overflow-x:hidden}
@@ -161,9 +166,14 @@
                         <div class="asset-meta" id="selectedPair">BTCUSDT · Binance Spot</div>
                     </div>
                 </div>
-                <div class="price-block">
-                    <div class="current-price" id="selectedPrice">Memuat harga…</div>
-                    <div class="price-change" id="selectedChange">Mengambil data pasar</div>
+                <div class="chart-top-right">
+                    <div class="price-block">
+                        <div class="current-price" id="selectedPrice">Memuat harga…</div>
+                        <div class="price-change" id="selectedChange">Mengambil data pasar</div>
+                    </div>
+                    <a href="kalkulator.html?asset=BTC%2FUSDT" id="btnCalcPos" class="calc-cta-btn">
+                        <i class="fa-solid fa-calculator"></i> Hitung Posisi
+                    </a>
                 </div>
             </div>
             <div class="chart-toolbar">
@@ -415,9 +425,22 @@
             const coin = getCoin(selectedSymbol);
             const base = coin?.base || selectedSymbol.replace(/USDT$/,'');
             const name = coin?.name || coinName(base);
+            const pairFormatted = `${base}/USDT`;
+
             $('selectedIcon').textContent = base.slice(0,5);
             $('selectedName').innerHTML = `${escapeHTML(name)} <span style="color:#7d899b;font-size:12px;font-weight:700">/ ${escapeHTML(base)}</span>`;
             $('selectedPair').textContent = `${selectedSymbol} · Binance Spot`;
+
+            const calcBtn = $('btnCalcPos');
+            if (calcBtn) {
+                const params = new URLSearchParams();
+                params.set('asset', pairFormatted);
+                if (coin && Number.isFinite(coin.price)) {
+                    params.set('entry', String(coin.price));
+                }
+                calcBtn.href = `kalkulator.html?${params.toString()}`;
+            }
+
             if (coin){
                 $('selectedPrice').textContent = price(coin.price);
                 $('selectedChange').textContent = `${coin.change >= 0 ? '+' : ''}${number(coin.change,2)}% dalam 24 jam`;
