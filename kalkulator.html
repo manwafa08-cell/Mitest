@@ -42,23 +42,23 @@ body{
 a{color:inherit}
 :focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:8px}
 
+/* Compatibility styles for #navAuthArea (non-Tailwind page) */
+#navAuthArea{display:flex;align-items:center;gap:12px}
+#navAuthArea a[href="login.html"],#navAuthArea a[href="settings.html"]{color:#9ca3af;font-size:.875rem;font-weight:600;transition:color .2s;text-decoration:none}
+#navAuthArea a[href="login.html"]:hover,#navAuthArea a[href="settings.html"]:hover{color:#00F0FF}
+#navAuthArea a[href="register.html"]{font-size:.75rem;font-weight:700;padding:8px 16px;border-radius:9999px;background:#00F0FF;color:#080B12;transition:background .2s;text-decoration:none}
+#navAuthArea a[href="register.html"]:hover{background:#00d5e3}
+#navAuthArea span{color:#d1d5db;font-size:.875rem;font-weight:600}
+#navLogoutBtn{font-size:.75rem;font-weight:700;padding:8px 16px;border-radius:9999px;border:1px solid rgba(0,240,255,.3);background:transparent;color:#00F0FF;transition:all .2s;cursor:pointer}
+#navLogoutBtn:hover{background:#00F0FF;color:#080B12}
+@media(max-width:640px){#navAuthArea span,#navLogoutBtn span{display:none}}
+
 /* ambient glow */
 .orb{position:fixed;pointer-events:none;border-radius:50%;z-index:0}
 .orb.a{top:-10%;left:50%;width:800px;height:400px;margin-left:-400px;background:var(--cyan);opacity:.12;filter:blur(100px);border-radius:100%;animation:breathe 7s ease-in-out infinite}
 .orb.b{bottom:-10%;left:-10%;width:400px;height:400px;background:#2563eb;opacity:.15;filter:blur(120px)}
 .orb.c{top:40%;right:-10%;width:300px;height:300px;background:var(--cyan);opacity:.08;filter:blur(90px);animation:breathe 7s ease-in-out 1.5s infinite}
 @keyframes breathe{0%,100%{opacity:.12}50%{opacity:.2}}
-
-nav{position:relative;z-index:5;padding:24px 24px 0;max-width:1040px;width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.14em;font-size:18px;text-decoration:none}
-.brand i{
-  width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:13px;
-  background:rgba(0,240,255,.1);border:1px solid rgba(0,240,255,.3);color:var(--cyan);
-  transition:background .3s var(--ease),color .3s var(--ease);
-}
-.brand:hover i{background:var(--cyan);color:var(--bg)}
-.back{font-size:13.5px;color:var(--muted);text-decoration:none;font-weight:600;transition:color .25s var(--ease)}
-.back:hover{color:var(--cyan)}
 
 main{position:relative;z-index:2;flex:1;width:100%;max-width:1040px;margin:0 auto;padding:0 20px 20px}
 
@@ -140,7 +140,7 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.2);box-shadow:0 0 0
 .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 
 /* results */
-.results{position:sticky;top:18px}
+.results{position:sticky;top:82px}
 .big{padding:24px;border-radius:20px;margin-bottom:16px;background:linear-gradient(135deg,rgba(0,240,255,.14),rgba(37,99,235,.08));border:1px solid rgba(0,240,255,.22)}
 .big small{font-size:13px;color:var(--muted);font-weight:600}
 .big strong{display:block;font-size:clamp(32px,5vw,44px);font-weight:800;line-height:1.15;margin:4px 0 2px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;word-break:break-all}
@@ -210,10 +210,8 @@ footer p{color:var(--dim);font-size:12px;font-weight:500;letter-spacing:.08em}
 
 <div class="orb a"></div><div class="orb b"></div><div class="orb c"></div>
 
-<nav class="rise">
-  <a class="brand" href="index.html"><i class="fa-solid fa-chart-line"></i><span>MARKET INSIGHT</span></a>
-  <a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Beranda</a>
-</nav>
+<!-- Centralized Navigation -->
+<div id="app-navbar"></div>
 
 <main>
   <section class="hero">
@@ -313,6 +311,13 @@ footer p{color:var(--dim);font-size:12px;font-weight:500;letter-spacing:.08em}
 </footer>
 
 <div class="toast" id="toast" role="status"></div>
+
+<!-- Centralized Navbar & Auth -->
+<script src="js/navbar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/nav-auth.js"></script>
 
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
