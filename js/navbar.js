@@ -1,8 +1,6 @@
 /**
- * MARKET INSIGHT - Centralized Navigation Component (Final Sync)
- * Kompatibel 100% dengan js/nav-auth.js (#navAuthArea) + fallback tombol Masuk/Daftar.
+ * MARKET INSIGHT - Centralized Navigation Component
  */
-
 (function initMarketInsightNavbar() {
   const NAV_ITEMS = [
     { label: 'Dashboard', href: 'index.html', matches: ['index.html', ''] },
@@ -30,9 +28,10 @@
       .mi-navbar {
         position: sticky;
         top: 0;
-        z-index: 50;
+        z-index: 9999;
         width: 100%;
-        background: rgba(8, 11, 18, 0.88);
+        pointer-events: auto;
+        background: rgba(8, 11, 18, 0.9);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -106,22 +105,34 @@
         align-items: center;
         gap: 12px;
       }
+      #navAuthArea,
+      #navAuthArea a,
+      #navAuthArea button {
+        position: relative;
+        z-index: 10000;
+        pointer-events: auto !important;
+      }
       #navAuthArea {
         display: flex;
         align-items: center;
         gap: 12px;
       }
-      .mi-fallback-login {
+      .mi-fallback-login,
+      #navAuthArea a[href="login.html"],
+      #navAuthArea a[href="settings.html"] {
         color: #9ca3af;
         font-size: 0.875rem;
         font-weight: 600;
         text-decoration: none;
         transition: color 0.2s ease;
       }
-      .mi-fallback-login:hover {
+      .mi-fallback-login:hover,
+      #navAuthArea a[href="login.html"]:hover,
+      #navAuthArea a[href="settings.html"]:hover {
         color: #00F0FF;
       }
-      .mi-fallback-register {
+      .mi-fallback-register,
+      #navAuthArea a[href="register.html"] {
         font-size: 0.75rem;
         font-weight: 700;
         padding: 8px 16px;
@@ -131,8 +142,29 @@
         text-decoration: none;
         transition: background 0.2s ease;
       }
-      .mi-fallback-register:hover {
+      .mi-fallback-register:hover,
+      #navAuthArea a[href="register.html"]:hover {
         background: #00d5e3;
+      }
+      #navAuthArea span {
+        color: #d1d5db;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+      #navLogoutBtn {
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 8px 16px;
+        border-radius: 9999px;
+        border: 1px solid rgba(0, 240, 255, 0.3);
+        background: transparent;
+        color: #00F0FF;
+        transition: all 0.2s ease;
+        cursor: pointer;
+      }
+      #navLogoutBtn:hover {
+        background: #00F0FF;
+        color: #080B12;
       }
       .mi-mobile-toggle {
         display: none;
@@ -170,12 +202,11 @@
         background: rgba(0, 240, 255, 0.1);
       }
       @media (max-width: 1080px) {
-        .mi-nav-links {
-          display: none;
-        }
-        .mi-mobile-toggle {
-          display: inline-flex;
-        }
+        .mi-nav-links { display: none; }
+        .mi-mobile-toggle { display: inline-flex; }
+      }
+      @media (max-width: 640px) {
+        #navAuthArea span, #navLogoutBtn span { display: none; }
       }
     `;
     document.head.appendChild(style);
@@ -216,7 +247,6 @@
           </ul>
 
           <div class="mi-nav-right">
-            <!-- Otomatis ditimpa js/nav-auth.js saat sesi Supabase selesai dicek -->
             <div id="navAuthArea">
               <a href="login.html" class="mi-fallback-login">Masuk</a>
               <a href="register.html" class="mi-fallback-register">Daftar</a>
@@ -240,11 +270,14 @@
         drawer.classList.toggle('open');
       });
     }
+
+    document.dispatchEvent(new CustomEvent('navbar:ready'));
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderNavbar);
-  } else {
+  // Render langsung jika #app-navbar sudah tersedia di DOM
+  if (document.getElementById('app-navbar')) {
     renderNavbar();
+  } else {
+    document.addEventListener('DOMContentLoaded', renderNavbar);
   }
 })();
