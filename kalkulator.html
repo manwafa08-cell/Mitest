@@ -62,7 +62,6 @@ a{color:inherit}
 
 main{position:relative;z-index:2;flex:1;width:100%;max-width:1040px;margin:0 auto;padding:0 20px 20px}
 
-/* one load-in sequence */
 .rise{opacity:0;transform:translateY(16px);animation:rise .7s var(--ease) forwards;animation-delay:var(--d,0s)}
 @keyframes rise{to{opacity:1;transform:none}}
 
@@ -86,8 +85,11 @@ h1 span{background:linear-gradient(90deg,#fff,var(--cyan) 50%,#3b82f6);-webkit-b
   transition:border-color .4s var(--ease),box-shadow .4s var(--ease);
 }
 .glass:hover{border-color:rgba(0,240,255,.2);box-shadow:0 20px 50px -25px rgba(0,240,255,.25)}
-.glass h2{font-size:18px;font-weight:700;margin-bottom:22px;display:flex;align-items:center;gap:10px}
-.glass h2 i{color:var(--cyan);font-size:16px}
+.glass-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.glass-head h2{font-size:18px;font-weight:700;margin:0;display:flex;align-items:center;gap:10px}
+.glass-head h2 i{color:var(--cyan);font-size:16px}
+.asset-pill{display:none;align-items:center;gap:7px;padding:5px 11px;border-radius:999px;background:rgba(0,240,255,.12);border:1px solid rgba(0,240,255,.3);color:var(--cyan);font-size:11.5px;font-weight:800}
+.asset-pill.show{display:inline-flex}
 
 /* long / short with sliding pill */
 .side{position:relative;display:grid;grid-template-columns:1fr 1fr;padding:5px;margin-bottom:24px;background:var(--field);border:1px solid var(--border);border-radius:16px}
@@ -162,6 +164,7 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.2);box-shadow:0 0 0
 .notice.danger .msg{background:rgba(251,113,133,.08);border-color:rgba(251,113,133,.35);color:#fecdd3}
 
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.actions .full-span{grid-column:1 / -1}
 .btn{
   font:700 14px var(--sans);padding:14px;border-radius:16px;cursor:pointer;text-align:center;text-decoration:none;
   display:inline-flex;align-items:center;justify-content:center;gap:9px;
@@ -170,6 +173,8 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.2);box-shadow:0 0 0
 .btn:active{transform:scale(.97)!important}
 .btn.primary{background:var(--cyan);color:var(--bg);border:0;box-shadow:0 0 20px rgba(0,240,255,.3)}
 .btn.primary:hover{background:var(--cyan-hover);box-shadow:0 0 35px rgba(0,240,255,.5);transform:translateY(-3px)}
+.btn.journal{background:rgba(52,211,153,.14);color:var(--long);border:1px solid rgba(52,211,153,.4)}
+.btn.journal:hover{background:rgba(52,211,153,.24);border-color:rgba(52,211,153,.7);transform:translateY(-3px)}
 .btn.ghost{background:rgba(255,255,255,.05);color:#fff;border:1px solid var(--border)}
 .btn.ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(0,240,255,.5);transform:translateY(-3px)}
 .formula{margin-top:18px;font-size:12px;color:var(--dim);line-height:1.65}
@@ -222,7 +227,10 @@ footer p{color:var(--dim);font-size:12px;font-weight:500;letter-spacing:.08em}
 
   <div class="grid">
     <section class="glass rise" style="--d:.28s" aria-labelledby="setup">
-      <h2 id="setup"><i class="fa-solid fa-sliders"></i>Trade setup</h2>
+      <div class="glass-head">
+        <h2 id="setup"><i class="fa-solid fa-sliders"></i>Trade setup</h2>
+        <span class="asset-pill" id="assetBadge"><i class="fa-solid fa-coins"></i> <span id="assetBadgeText">BTC/USDT</span></span>
+      </div>
 
       <div class="side" id="side" data-side="long" role="group" aria-label="Arah posisi">
         <button type="button" class="l" id="btnLong" aria-pressed="true">Long</button>
@@ -267,7 +275,9 @@ footer p{color:var(--dim);font-size:12px;font-weight:500;letter-spacing:.08em}
     </section>
 
     <aside class="glass results rise" style="--d:.36s" aria-labelledby="hasil" aria-live="polite">
-      <h2 id="hasil"><i class="fa-solid fa-calculator"></i>Hasil perhitungan</h2>
+      <div class="glass-head">
+        <h2 id="hasil"><i class="fa-solid fa-calculator"></i>Hasil perhitungan</h2>
+      </div>
 
       <div class="big">
         <small>Position size (notional)</small>
@@ -290,6 +300,7 @@ footer p{color:var(--dim);font-size:12px;font-weight:500;letter-spacing:.08em}
       <div class="actions">
         <button type="button" class="btn primary" id="btnCopy"><i class="fa-regular fa-copy"></i>Salin hasil</button>
         <button type="button" class="btn ghost" id="btnReset"><i class="fa-solid fa-rotate-right"></i>Reset contoh</button>
+        <button type="button" class="btn journal full-span" id="btnSendJournal"><i class="fa-solid fa-book"></i>Catat ke Trading Journal</button>
       </div>
 
       <p class="formula">Rumus: risiko nominal ÷ jarak SL (%) = nilai posisi. Margin = nilai posisi ÷ leverage. Belum termasuk fee, funding, slippage, tier margin, dan aturan exchange. Risiko 100% sangat ekstrem dan tidak disarankan.</p>
@@ -328,6 +339,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var side = 'long';
   var last = null;
+  var activeAsset = '';
 
   var el = {
     capital:$('capital'), risk:$('risk'), sl:$('sl'), lev:$('lev'), entry:$('entry'), mm:$('mm'),
@@ -335,7 +347,8 @@ document.getElementById('year').textContent = new Date().getFullYear();
     btnLong:$('btnLong'), btnShort:$('btnShort'),
     outPos:$('outPos'), outPosSub:$('outPosSub'), outRisk:$('outRisk'), outRiskSub:$('outRiskSub'),
     outMargin:$('outMargin'), outQty:$('outQty'), outSlPrice:$('outSlPrice'), outSlSub:$('outSlSub'), outLiq:$('outLiq'),
-    n1:$('n1'), n2:$('n2'), n3:$('n3')
+    n1:$('n1'), n2:$('n2'), n3:$('n3'),
+    assetBadge:$('assetBadge'), assetBadgeText:$('assetBadgeText')
   };
 
   function num(v){
@@ -387,6 +400,16 @@ document.getElementById('year').textContent = new Date().getFullYear();
       box.classList.add('show');
     } else {
       box.classList.remove('show');
+    }
+  }
+
+  function setAssetBadge(asset){
+    activeAsset = (asset || '').trim();
+    if(activeAsset){
+      el.assetBadgeText.textContent = activeAsset;
+      el.assetBadge.classList.add('show');
+    } else {
+      el.assetBadge.classList.remove('show');
     }
   }
 
@@ -466,7 +489,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     note(el.n2, w2, true);
     note(el.n3, w3, true);
 
-    last = {side:side, capital:capital, riskPct:riskPct, risk$:risk$, slPct:slPct, lev:lev, entry:hasEntry?entry:NaN,
+    last = {asset:activeAsset, side:side, capital:capital, riskPct:riskPct, risk$:risk$, slPct:slPct, lev:lev, entry:hasEntry?entry:NaN,
             pos:pos, margin:margin, qty:qty, slPrice:slPrice, liq:liq};
   }
 
@@ -502,14 +525,25 @@ document.getElementById('year').textContent = new Date().getFullYear();
     });
   }
 
-  function reset(){
+  function reset(keepQueryParams){
+    var params = keepQueryParams ? new URLSearchParams(window.location.search) : null;
+    var qAsset = params ? params.get('asset') : null;
+    var qEntry = params ? num(params.get('entry')) : NaN;
+    var qSide  = params ? (params.get('side') || '').toLowerCase() : '';
+
     el.capital.value = DEFAULTS.capital;
     el.risk.value = DEFAULTS.risk;
     el.sl.value = DEFAULTS.sl;
     el.lev.value = DEFAULTS.lev;
-    el.entry.value = DEFAULTS.entry;
+    el.entry.value = (isFinite(qEntry) && qEntry > 0) ? qEntry : DEFAULTS.entry;
     el.mm.value = DEFAULTS.mm;
-    setSide('long');
+
+    setAssetBadge(qAsset || '');
+    setSide(qSide === 'short' ? 'short' : 'long');
+
+    if(qAsset || (isFinite(qEntry) && qEntry > 0)){
+      toast('Data dari Coin Explorer dimuat' + (qAsset ? ' (' + qAsset + ')' : ''));
+    }
   }
 
   ['capital','risk','sl','lev','entry','mm'].forEach(function(k){
@@ -517,13 +551,13 @@ document.getElementById('year').textContent = new Date().getFullYear();
   });
   el.btnLong.addEventListener('click', function(){ setSide('long'); });
   el.btnShort.addEventListener('click', function(){ setSide('short'); });
-  $('btnReset').addEventListener('click', function(){ reset(); toast('Kembali ke contoh awal'); });
+  $('btnReset').addEventListener('click', function(){ reset(false); toast('Kembali ke contoh awal'); });
 
   $('btnCopy').addEventListener('click', function(){
     if(!last){ toast('Isi modal trading dulu'); return; }
     var L = last;
     var lines = [
-      'MARKET INSIGHT — Position Size Calculator',
+      'MARKET INSIGHT — Position Size Calculator' + (L.asset ? ' (' + L.asset + ')' : ''),
       'Arah: ' + (L.side === 'long' ? 'Long' : 'Short'),
       'Modal: ' + usd(L.capital),
       'Risiko: ' + pct(L.riskPct) + ' (' + usd(L.risk$) + ')',
@@ -541,7 +575,24 @@ document.getElementById('year').textContent = new Date().getFullYear();
     copyText(lines.join('\n')).then(function(){ toast('Hasil disalin'); }, function(){ toast('Gagal menyalin, salin manual ya'); });
   });
 
-  reset();
+  // Fase 3: Kirim data kalkulator ke Trading Journal
+  $('btnSendJournal').addEventListener('click', function(){
+    if(!last){ toast('Isi modal trading dulu'); return; }
+    var params = new URLSearchParams();
+    if(last.asset) params.set('asset', last.asset);
+    params.set('side', last.side);
+    params.set('posSize', (Math.round(last.pos * 100) / 100).toString());
+    if(isFinite(last.entry)){
+      params.set('entry', last.entry.toString());
+    }
+    if(isFinite(last.slPrice)){
+      var d = last.slPrice >= 1000 ? 2 : last.slPrice >= 1 ? 4 : last.slPrice >= 0.01 ? 6 : 8;
+      params.set('sl', (Math.round(last.slPrice * Math.pow(10, d)) / Math.pow(10, d)).toString());
+    }
+    window.location.href = 'journal.html?' + params.toString();
+  });
+
+  reset(true);
 })();
 </script>
 </body>
