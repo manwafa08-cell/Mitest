@@ -12,9 +12,7 @@
   <style>
     :root{--bg:#080B12;--panel:#0e1420;--line:rgba(255,255,255,.09);--muted:#8994a7;--cyan:#00F0FF;--white:#f5f8fc}
     *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,rgba(0,240,255,.13),transparent 42%),radial-gradient(ellipse at 100% 100%,rgba(37,99,235,.12),transparent 35%),var(--bg);color:var(--white);font-family:"Plus Jakarta Sans",sans-serif;display:flex;flex-direction:column}
-    a{color:var(--cyan);text-decoration:none}.topbar{height:78px;padding:0 clamp(20px,5vw,72px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05)}
-    .brand{display:flex;align-items:center;gap:12px;color:#fff;font-size:15px;font-weight:800;letter-spacing:1.2px}.brand-icon{width:34px;height:34px;border:1px solid rgba(0,240,255,.3);background:rgba(0,240,255,.09);border-radius:10px;display:grid;place-items:center;color:var(--cyan)}
-    .top-link{font-size:13px;color:#aab4c4}.top-link:hover{color:var(--cyan)}
+    a{color:var(--cyan);text-decoration:none}
     main{width:100%;max-width:1080px;margin:auto;padding:54px 22px;display:grid;grid-template-columns:1fr 470px;gap:70px;align-items:center;flex:1}
     .intro .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--cyan);font-size:11px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase;border:1px solid rgba(0,240,255,.2);background:rgba(0,240,255,.06);padding:9px 13px;border-radius:99px}
     .intro h1{font-size:clamp(36px,5vw,58px);line-height:1.12;letter-spacing:-2px;margin:22px 0 18px}.gradient{background:linear-gradient(90deg,#fff,var(--cyan),#4c8dff);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -27,14 +25,11 @@
     .divider{height:1px;background:var(--line);margin:22px 0}.bottom{text-align:center;font-size:12px;color:var(--muted);line-height:1.8}.bottom a{font-weight:700}.legal{text-align:center;font-size:10px;color:#657084;margin-top:18px;line-height:1.7}
     footer{text-align:center;padding:20px;color:#596477;font-size:10px;border-top:1px solid rgba(255,255,255,.04)}
     @media(max-width:850px){main{max-width:540px;grid-template-columns:1fr;gap:28px;padding-top:38px}.intro{text-align:center}.intro p{margin-left:auto;margin-right:auto}.feature-list{display:none}.intro h1{font-size:38px}.card{padding:26px}}
-    @media(max-width:420px){.topbar{height:66px;padding:0 17px}.brand{font-size:12px}.card{padding:22px 18px}.intro h1{font-size:33px}}
+    @media(max-width:420px){.card{padding:22px 18px}.intro h1{font-size:33px}}
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="index.html"><span class="brand-icon"><i class="fa-solid fa-chart-line"></i></span><span>MARKET INSIGHT</span></a>
-    <a class="top-link" href="login.html">Already have an account? <strong>Sign in</strong></a>
-  </header>
+  <div id="app-navbar"></div>
 
   <main>
     <section class="intro">
@@ -85,11 +80,10 @@
   </main>
   <footer>© <span id="year"></span> MARKET INSIGHT. ALL RIGHTS RESERVED.</footer>
 
-  <!-- Supabase Library -->
+  <script src="js/navbar.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Supabase Configuration -->
   <script src="js/supabase.js"></script>
-  <!-- Authentication -->
   <script src="js/auth.js"></script>
+  <script src="js/nav-auth.js"></script>
 </body>
 </html>
